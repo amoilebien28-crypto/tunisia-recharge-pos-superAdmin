@@ -4,67 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الإدارة المركزية - Super Admin</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        table.admin-grid {
+        table.custom-grid {
             border-collapse: collapse !important;
             width: 100%;
         }
-        table.admin-grid th, table.admin-grid td {
-            border: 1px solid #cbd5e1 !important;
-            padding: 10px;
+        table.custom-grid th, table.custom-grid td {
+            border: 1px solid #475569 !important;
+            padding: 8px 10px;
         }
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
 
     <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
-    <div id="adminAuthScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-700">
-            <div class="text-center space-y-2">
-                <div class="bg-indigo-600/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-indigo-400 text-3xl font-bold border border-indigo-500/30">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <h2 class="text-2xl font-black text-white">الإدارة المركزية (Super Admin)</h2>
-                <p class="text-xs text-slate-400">أدخل الرمز السري للتحكم في المنظومة</p>
+    <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-5">
+            <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
+                <i class="fa-solid fa-user-shield"></i>
             </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">اسم المسؤول:</label>
-                    <input type="text" id="adminUser" placeholder="admin" value="admin" class="w-full border border-slate-600 p-3 rounded-xl text-sm font-bold bg-slate-900 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور السرية:</label>
-                    <input type="password" id="adminPass" placeholder="••••••••" class="w-full border border-slate-600 p-3 rounded-xl text-sm font-bold bg-slate-900 text-white">
-                </div>
-                <button type="button" onclick="handleAdminLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold shadow-lg transition">دخول لوحة التحكم</button>
+            <div>
+                <h2 class="text-xl font-black text-white">الإدارة المركزية (Super Admin)</h2>
+                <p class="text-xs text-slate-400 mt-1">الرجاء إدخال الرمز السري للتحكم بالنظام</p>
             </div>
+            <div>
+                <input type="password" id="adminMasterPass" placeholder="رمز الدخول السري..." class="w-full bg-slate-900 border border-slate-700 p-3.5 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
+            </div>
+            <button type="button" onclick="handleAdminLogin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold text-sm shadow-md transition">دخول لوحة التحكم</button>
         </div>
     </div>
 
     <!-- رأسية لوحة الأدمن -->
-    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-30 shadow-md">
+    <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">
-                    <i class="fa-solid fa-crown"></i>
+                <div class="w-10 h-10 bg-rose-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-black text-white">لوحة المالك والتحكم العام</h1>
-                    <span class="text-[10px] text-emerald-400 font-bold block"><i class="fa-solid fa-circle text-[8px] mr-1"></i> متصل بقاعدة بيانات Firebase</span>
+                    <h1 class="text-base font-black text-white">منصة المراقبة والتحكم المركزي</h1>
+                    <span class="text-[10px] text-slate-400 font-bold block">إدارة التراخيص والنسخ الاحتياطي</span>
                 </div>
             </div>
-
             <div class="flex items-center gap-2">
-                <button type="button" onclick="downloadDatabaseBackup()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-md">
-                    <i class="fa-solid fa-download"></i> نسخة احتياطية (Backup)
+                <button type="button" onclick="downloadBackupJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> نسخة احتياطية (Backup)
                 </button>
-                <button type="button" onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl text-xs font-black transition flex items-center gap-1">
-                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    خروج
                 </button>
             </div>
         </div>
@@ -72,107 +61,85 @@
 
     <main class="container mx-auto px-4 py-8 max-w-5xl space-y-6">
 
-        <!-- بطاقات الإحصائيات العامة -->
+        <!-- بطاقات إحصائيات النظام -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">إجمالي البائعين (الفوندورات):</span>
+                <span class="text-xs text-slate-400 font-bold block">عدد الموزعين:</span>
                 <h3 id="statTotalVendeurs" class="text-2xl font-black text-indigo-400 mt-1">0</h3>
             </div>
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">إجمالي الحوانت (التجار):</span>
+                <span class="text-xs text-slate-400 font-bold block">إجمالي الحوانت:</span>
                 <h3 id="statTotalClients" class="text-2xl font-black text-emerald-400 mt-1">0</h3>
             </div>
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">إجمالي المعاملات والطلبيات:</span>
+                <span class="text-xs text-slate-400 font-bold block">الطلبيات الجملية:</span>
                 <h3 id="statTotalOrders" class="text-2xl font-black text-amber-400 mt-1">0</h3>
             </div>
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">أكواد التفعيل المتوفرة:</span>
-                <h3 id="statTotalCodes" class="text-2xl font-black text-cyan-400 mt-1">0</h3>
+                <span class="text-xs text-slate-400 font-bold block">فواتير الشراء المسجلة:</span>
+                <h3 id="statTotalInvoices" class="text-2xl font-black text-rose-400 mt-1">0</h3>
             </div>
         </div>
 
-        <!-- قسم توليد أكواد الاشتراك المدفوع -->
-        <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 space-y-4">
-            <h3 class="text-base font-black text-white flex items-center gap-2">
-                <i class="fa-solid fa-key text-amber-400"></i> توليد كود تفعيل واشتراك جديد (بيع البرنامج)
-            </h3>
-            <p class="text-xs text-slate-400">عند شراء أي بائع للبرنامج، اختر المدة واضغط على توليد الكود لترسله له لتفعيل حسابه:</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- قسم إدارة البائعين (الفوندورات) والاشتراكات -->
+        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">مدة الاشتراك:</label>
-                    <select id="codeDuration" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-xl text-sm font-bold text-white">
-                        <option value="30">شهر واحد (30 يوماً)</option>
-                        <option value="90">3 أشهر (90 يوماً)</option>
-                        <option value="180">6 أشهر (180 يوماً)</option>
-                        <option value="365">سنة كاملة (365 يوماً)</option>
-                    </select>
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-indigo-400"></i> إدارة حسابات واشتراكات الموزعين
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد الاشتراك، وتغيير كلمة المرور</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">ملاحظة أو اسم المشتري:</label>
-                    <input type="text" id="codeNote" placeholder="مثال: فوندور سوسة..." class="w-full bg-slate-900 border border-slate-600 p-3 rounded-xl text-sm font-bold text-white">
-                </div>
-                <div class="flex items-end">
-                    <button type="button" onclick="generateActivationCode()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> توليد كود التفعيل
-                    </button>
-                </div>
+                <button type="button" onclick="loadAllSystemData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold transition">
+                    <i class="fa-solid fa-rotate-right ml-1"></i> تحديث
+                </button>
             </div>
 
-            <!-- قائمة الأكواد المتوفرة وغير المستعملة -->
-            <div class="border-t border-slate-700 pt-3">
-                <span class="text-xs font-bold text-slate-400 block mb-2">الأكواد المتوفرة للبيع وغير المستعملة:</span>
-                <div id="activeCodesList" class="grid grid-cols-1 md:grid-cols-3 gap-2"></div>
-            </div>
-        </div>
-
-        <!-- جدول إدارة البائعين (الفوندورات) والتحكم في اشتراكاتهم -->
-        <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-black text-white flex items-center gap-2">
-                    <i class="fa-solid fa-users-gear text-indigo-400"></i> إدارة حسابات البائعين (الفوندورات)
-                </h3>
-            </div>
-
-            <div class="overflow-x-auto rounded-2xl border border-slate-700">
-                <table class="admin-grid text-right text-xs">
+            <div class="overflow-x-auto">
+                <table class="custom-grid w-full text-right text-xs">
                     <thead>
-                        <tr class="bg-slate-900 text-slate-300 font-black">
-                            <th>اسم الفوندور</th>
+                        <tr class="bg-slate-700 text-slate-200">
+                            <th>اسم الموزع</th>
                             <th>رقم الهاتف</th>
                             <th>كلمة المرور</th>
                             <th>حالة الحساب</th>
-                            <th>تاريخ نهاية الاشتراك</th>
-                            <th>إجراءات التحكم</th>
+                            <th>نهاية الاشتراك</th>
+                            <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="vendeursTableBody" class="divide-y divide-slate-700">
-                        <tr><td colspan="6" class="text-center py-4 text-slate-500">جاري تحميل البائعين...</td></tr>
+                        <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل البيانات...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- جدول الحوانت للتدخل وإصلاح المشاكل -->
-        <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 space-y-4">
-            <h3 class="text-base font-black text-white flex items-center gap-2">
-                <i class="fa-solid fa-store text-emerald-400"></i> قائمة الحوانت المسجلة (لإصلاح كلمات المرور والمشاكل)
-            </h3>
-            <div class="overflow-x-auto rounded-2xl border border-slate-700">
-                <table class="admin-grid text-right text-xs">
+        <!-- قسم البحث والتعديل في الحوانت (Clients) لجميع الموزعين -->
+        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 space-y-4">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-4">
+                <div>
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-store text-emerald-400"></i> قاعدة بيانات التجار (الحوانت)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">البحث وإصلاح كلمات المرور ومشاكل الدخول</p>
+                </div>
+                <input type="text" id="clientSearchInput" oninput="filterClientsTable()" placeholder="ابحث باسم الحانوت أو الهاتف..." class="bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 w-full md:w-64">
+            </div>
+
+            <div class="overflow-x-auto max-h-80 overflow-y-auto">
+                <table class="custom-grid w-full text-right text-xs">
                     <thead>
-                        <tr class="bg-slate-900 text-slate-300 font-black">
+                        <tr class="bg-slate-700 text-slate-200">
                             <th>اسم الحانوت</th>
-                            <th>رقم الهاتف</th>
+                            <th>الهاتف</th>
                             <th>كلمة المرور</th>
                             <th>العنوان</th>
-                            <th>الفوندور التابع له</th>
-                            <th>تعديل كلمة السر</th>
+                            <th>معرف الموزع (Vendeur ID)</th>
+                            <th>تعديل الكود</th>
                         </tr>
                     </thead>
                     <tbody id="clientsTableBody" class="divide-y divide-slate-700">
-                        <tr><td colspan="6" class="text-center py-4 text-slate-500">جاري تحميل الحوانت...</td></tr>
+                        <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل الحوانت...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -180,23 +147,25 @@
 
     </main>
 
-    <!-- نافذة تعديل كلمة مرور فوندور أو تاجر -->
-    <div id="changePasswordModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
-            <h4 class="font-black text-base text-slate-900">تعديل كلمة المرور من الإدارة</h4>
-            <p id="targetAccountName" class="text-xs text-slate-500 font-bold"></p>
-            <input type="text" id="targetNewPasswordInput" placeholder="أدخل كلمة المرور الجديدة..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+    <!-- نافذة تعديل كلمة المرور -->
+    <div id="editPassModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
+            <h4 id="editPassTitle" class="font-bold text-sm text-white">تعديل كلمة المرور</h4>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">كلمة المرور الجديدة:</label>
+                <input type="text" id="newPassValue" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-rose-500">
+            </div>
             <div class="flex gap-2">
-                <button type="button" onclick="confirmPasswordChange()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
-                <button type="button" onclick="closePasswordModal()" class="bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+                <button type="button" onclick="saveUpdatedPassword()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
+                <button type="button" onclick="closeEditPassModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- السكربت والربط بالفايربيز -->
+    <!-- السكربت والربط بقاعدة البيانات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYNDYcwlmX5rdnpXyGoHR48g-T6h_oHFk",
@@ -210,228 +179,209 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        window.db = db;
 
-        // كلمة سر الأدمن الافتراضية (يمكنك تغييرها من هنا)
-        const ADMIN_SECRET = "admin2026";
+        // رمز الدخول السري للأدمن
+        const MASTER_ADMIN_PIN = "mourad2026";
 
+        window.allVendeurs = [];
+        window.allClients = [];
+        window.allOrders = [];
+        window.allInvoices = [];
+        window.targetEditItem = null;
+
+        // ربط الدوال صراحة بنطاق window لتعمل في أزرار HTML
         window.handleAdminLogin = function() {
-            let pass = document.getElementById('adminPass').value.trim();
-            if (pass === ADMIN_SECRET) {
+            const passInput = document.getElementById('adminMasterPass');
+            const pass = passInput ? passInput.value.trim() : '';
+            if (pass === MASTER_ADMIN_PIN) {
                 sessionStorage.setItem('superAdminAuth', 'true');
-                document.getElementById('adminAuthScreen').classList.add('hidden');
-                loadAllSystemData();
+                document.getElementById('adminLoginScreen').classList.add('hidden');
+                window.loadAllSystemData();
             } else {
-                alert('كلمة المرور غير صحيحة!');
+                alert('رمز الدخول غير صحيح.');
             }
         };
 
-        window.adminLogout = function() {
+        window.logoutAdmin = function() {
             sessionStorage.removeItem('superAdminAuth');
             location.reload();
         };
 
-        function checkAdminAuth() {
-            if (sessionStorage.getItem('superAdminAuth') === 'true') {
-                document.getElementById('adminAuthScreen').classList.add('hidden');
-                loadAllSystemData();
-            }
-        }
+        window.loadAllSystemData = async function() {
+            try {
+                // جلب المجموعات مع معالجة كل كولكشن على حدة لتفادي توقف الصفحة في حال وجود خطأ في كولكشن واحد
+                try {
+                    const vSnap = await getDocs(collection(db, "vendeurs"));
+                    window.allVendeurs = [];
+                    vSnap.forEach(d => window.allVendeurs.push({ id: d.id, ...d.data() }));
+                } catch(e) { console.warn("Vendeurs fetch error:", e); }
 
-        window.allVendeursList = [];
-        window.allClientsList = [];
-        window.allOrdersList = [];
-        window.allCodesList = [];
+                try {
+                    const cSnap = await getDocs(collection(db, "clients"));
+                    window.allClients = [];
+                    cSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
+                } catch(e) { console.warn("Clients fetch error:", e); }
 
-        function loadAllSystemData() {
-            // الاستماع للفوندورات
-            onSnapshot(collection(db, "vendeurs"), (snap) => {
-                window.allVendeursList = [];
-                snap.forEach(d => window.allVendeursList.push({ id: d.id, ...d.data() }));
-                document.getElementById('statTotalVendeurs').innerText = window.allVendeursList.length;
+                try {
+                    const oSnap = await getDocs(collection(db, "orders"));
+                    window.allOrders = [];
+                    oSnap.forEach(d => window.allOrders.push({ id: d.id, ...d.data() }));
+                } catch(e) { console.warn("Orders fetch error:", e); }
+
+                try {
+                    const iSnap = await getDocs(collection(db, "invoices"));
+                    window.allInvoices = [];
+                    iSnap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
+                } catch(e) { console.warn("Invoices fetch error:", e); }
+
+                document.getElementById('statTotalVendeurs').innerText = window.allVendeurs.length;
+                document.getElementById('statTotalClients').innerText = window.allClients.length;
+                document.getElementById('statTotalOrders').innerText = window.allOrders.length;
+                document.getElementById('statTotalInvoices').innerText = window.allInvoices.length;
+
                 renderVendeursTable();
-            });
-
-            // الاستماع للتجار
-            onSnapshot(collection(db, "clients"), (snap) => {
-                window.allClientsList = [];
-                snap.forEach(d => window.allClientsList.push({ id: d.id, ...d.data() }));
-                document.getElementById('statTotalClients').innerText = window.allClientsList.length;
-                renderClientsTable();
-            });
-
-            // الاستماع للطلبيات
-            onSnapshot(collection(db, "orders"), (snap) => {
-                window.allOrdersList = [];
-                snap.forEach(d => window.allOrdersList.push({ id: d.id, ...d.data() }));
-                document.getElementById('statTotalOrders').innerText = window.allOrdersList.length;
-            });
-
-            // الاستماع لأكواد التفعيل
-            onSnapshot(collection(db, "activation_codes"), (snap) => {
-                window.allCodesList = [];
-                snap.forEach(d => window.allCodesList.push({ id: d.id, ...d.data() }));
-                let unused = window.allCodesList.filter(c => !c.used);
-                document.getElementById('statTotalCodes').innerText = unused.length;
-                renderActiveCodes();
-            });
-        }
+                renderClientsTable(window.allClients);
+            } catch (err) {
+                console.error("General error:", err);
+            }
+        };
 
         function renderVendeursTable() {
             let html = '';
-            window.allVendeursList.forEach(v => {
-                let isActive = v.isActive !== false;
-                let expiryStr = v.subscriptionExpiry ? new Date(v.subscriptionExpiry).toLocaleDateString() : 'غير محدد (مفتوح)';
+            window.allVendeurs.forEach(v => {
+                const isActive = v.isActive !== false;
+                const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString() : 'غير محدد';
                 
                 html += `
-                    <tr class="hover:bg-slate-700/50">
-                        <td class="font-black text-white">${v.name || 'غير معروف'}</td>
-                        <td class="font-bold text-slate-300">${v.phone || ''}</td>
-                        <td class="font-bold text-amber-400">${v.password || '••••'}</td>
+                    <tr class="hover:bg-slate-750">
+                        <td class="font-bold text-white">${v.name || 'بدون اسم'}</td>
+                        <td class="font-mono text-slate-300">${v.phone || '—'}</td>
+                        <td class="font-mono text-amber-400 font-bold">${v.password || '—'}</td>
                         <td>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-                                ${isActive ? 'مفعل' : 'موقوف'}
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                                ${isActive ? 'مفعل' : 'معطل'}
                             </span>
                         </td>
-                        <td class="text-slate-400 font-bold">${expiryStr}</td>
-                        <td class="flex gap-1.5 justify-end">
-                            <button onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${isActive ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}">
-                                ${isActive ? 'تجميد' : 'تفعيل'}
+                        <td class="text-slate-300">${expiry}</td>
+                        <td class="space-x-1 space-x-reverse">
+                            <button type="button" onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
+                                ${isActive ? 'تعطيل' : 'تفعيل'}
                             </button>
-                            <button onclick="extendVendeurSubscription('${v.id}', 30)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold">
-                                +30 يوم
+                            <button type="button" onclick="renewSubscription('${v.id}', 30)" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-[10px] font-bold text-white">
+                                + شهر
                             </button>
-                            <button onclick="openPasswordChangeModal('vendeurs', '${v.id}', '${v.name}')" class="bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold">
-                                تعديل الكود
+                            <button type="button" onclick="renewSubscription('${v.id}', 365)" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-[10px] font-bold text-white">
+                                + سنة
+                            </button>
+                            <button type="button" onclick="openEditPass('vendeur', '${v.id}', '${v.name || ''}', '${v.password || ''}')" class="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
+                                تعديل
                             </button>
                         </td>
                     </tr>
                 `;
             });
-            document.getElementById('vendeursTableBody').innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-500">لا يوجد بائعون مسجلون.</td></tr>';
+            const tbody = document.getElementById('vendeursTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا يوجد موزعون مسجلون.</td></tr>';
         }
 
-        function renderClientsTable() {
+        function renderClientsTable(clientsList) {
             let html = '';
-            window.allClientsList.forEach(c => {
-                let v = window.allVendeursList.find(item => item.id === c.vendeurId);
-                let vName = v ? v.name : 'غير محدد';
+            clientsList.forEach(c => {
                 html += `
-                    <tr class="hover:bg-slate-700/50">
-                        <td class="font-black text-white">${c.name}</td>
-                        <td class="font-bold text-slate-300">${c.phone}</td>
-                        <td class="font-bold text-amber-400">${c.password}</td>
-                        <td class="text-slate-400">${c.address || 'غير محدد'}</td>
-                        <td class="text-indigo-400 font-bold">${vName}</td>
+                    <tr class="hover:bg-slate-750">
+                        <td class="font-bold text-white">${c.name || 'بدون اسم'}</td>
+                        <td class="font-mono text-slate-300">${c.phone || '—'}</td>
+                        <td class="font-mono text-emerald-400 font-bold">${c.password || '—'}</td>
+                        <td class="text-slate-300">${c.address || '—'}</td>
+                        <td class="font-mono text-[10px] text-slate-400">${c.vendeurId || '—'}</td>
                         <td>
-                            <button onclick="openPasswordChangeModal('clients', '${c.id}', '${c.name}')" class="bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">
-                                تغيير الكود
+                            <button type="button" onclick="openEditPass('client', '${c.id}', '${c.name || ''}', '${c.password || ''}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
+                                تغيير كلمة المرور
                             </button>
                         </td>
                     </tr>
                 `;
             });
-            document.getElementById('clientsTableBody').innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-500">لا توجد حوانت مسجلة.</td></tr>';
+            const tbody = document.getElementById('clientsTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مطابقة.</td></tr>';
         }
+
+        window.filterClientsTable = function() {
+            const queryText = (document.getElementById('clientSearchInput').value || '').toLowerCase().trim();
+            const filtered = window.allClients.filter(c => 
+                (c.name && c.name.toLowerCase().includes(queryText)) ||
+                (c.phone && c.phone.includes(queryText))
+            );
+            renderClientsTable(filtered);
+        };
 
         window.toggleVendeurStatus = async function(id, currentStatus) {
             try {
                 await updateDoc(doc(db, "vendeurs", id), { isActive: !currentStatus });
+                alert(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} حساب الموزع.`);
+                window.loadAllSystemData();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        window.extendVendeurSubscription = async function(id, days) {
-            let v = window.allVendeursList.find(item => item.id === id);
-            let currentExp = v && v.subscriptionExpiry ? new Date(v.subscriptionExpiry) : new Date();
-            if (currentExp < new Date()) currentExp = new Date();
-            currentExp.setDate(currentExp.getDate() + days);
-
+        window.renewSubscription = async function(id, days) {
             try {
-                await updateDoc(doc(db, "vendeurs", id), {
-                    subscriptionExpiry: currentExp.toISOString(),
-                    isActive: true
+                const now = new Date();
+                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
+                await updateDoc(doc(db, "vendeurs", id), { 
+                    isActive: true, 
+                    expiryDate: newDate.toISOString() 
                 });
-                alert(`تم تمديد الاشتراك حتى: ${currentExp.toLocaleDateString()}`);
+                alert(`تم تمديد اشتراك الموزع بنجاح لمدة ${days} يوماً.`);
+                window.loadAllSystemData();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        window.generateActivationCode = async function() {
-            let days = parseInt(document.getElementById('codeDuration').value) || 30;
-            let note = document.getElementById('codeNote').value.trim() || 'اشتراك مدفوع';
-            let code = 'ACT-' + Math.random().toString(36).substring(2, 7).toUpperCase() + '-' + days;
-
-            try {
-                await addDoc(collection(db, "activation_codes"), {
-                    code, days, note, used: false, createdAt: new Date().toISOString()
-                });
-                document.getElementById('codeNote').value = '';
-                alert(`تم توليد الكود بنجاح:\n${code}`);
-            } catch (e) { alert('خطأ أثناء التوليد: ' + e.message); }
+        window.openEditPass = function(type, id, name, currentPass) {
+            window.targetEditItem = { type, id };
+            document.getElementById('editPassTitle').innerText = `تعديل كلمة مرور: ${name}`;
+            document.getElementById('newPassValue').value = currentPass || '';
+            document.getElementById('editPassModal').classList.remove('hidden');
         };
 
-        function renderActiveCodes() {
-            let unused = window.allCodesList.filter(c => !c.used);
-            let html = '';
-            unused.forEach(c => {
-                html += `
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 flex justify-between items-center text-xs">
-                        <div>
-                            <span class="font-black text-amber-400 block tracking-wider">${c.code}</span>
-                            <span class="text-[10px] text-slate-400">${c.days} يوماً | ${c.note}</span>
-                        </div>
-                        <button onclick="navigator.clipboard.writeText('${c.code}'); alert('تم نسخ الكود!');" class="bg-slate-800 hover:bg-slate-700 text-white px-2 py-1 rounded font-bold text-[10px]">
-                            نسخ
-                        </button>
-                    </div>
-                `;
-            });
-            document.getElementById('activeCodesList').innerHTML = html || '<p class="text-slate-500 text-xs col-span-3">لا توجد أكواد غير مستعملة حالياً.</p>';
+        window.closeEditPassModal = function() {
+            document.getElementById('editPassModal').classList.add('hidden');
+            window.targetEditItem = null;
+        };
+
+        window.saveUpdatedPassword = async function() {
+            const newPass = document.getElementById('newPassValue').value.trim();
+            if (!newPass) { alert('أدخل كلمة المرور.'); return; }
+            try {
+                const collectionName = window.targetEditItem.type === 'vendeur' ? 'vendeurs' : 'clients';
+                await updateDoc(doc(db, collectionName, window.targetEditItem.id), { password: newPass });
+                alert('تم حفظ كلمة المرور الجديدة بنجاح.');
+                window.closeEditPassModal();
+                window.loadAllSystemData();
+            } catch (e) { alert('خطأ: ' + e.message); }
+        };
+
+        window.downloadBackupJSON = function() {
+            const fullBackup = {
+                timestamp: new Date().toISOString(),
+                vendeurs: window.allVendeurs,
+                clients: window.allClients,
+                orders: window.allOrders,
+                invoices: window.allInvoices
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `backup_tunisia_recharge_${new Date().toISOString().slice(0,10)}.json`);
+            dlAnchor.click();
+        };
+
+        // التحقق من حالة الدخول عند فتح الصفحة
+        if (sessionStorage.getItem('superAdminAuth') === 'true') {
+            const loginScr = document.getElementById('adminLoginScreen');
+            if (loginScr) loginScr.classList.add('hidden');
+            window.loadAllSystemData();
         }
-
-        // تعديل كلمة المرور من الإدارة
-        let currentTarget = null;
-        window.openPasswordChangeModal = function(colName, id, name) {
-            currentTarget = { colName, id };
-            document.getElementById('targetAccountName').innerText = `الحساب: ${name}`;
-            document.getElementById('targetNewPasswordInput').value = '';
-            document.getElementById('changePasswordModal').classList.remove('hidden');
-        };
-        window.closePasswordModal = () => document.getElementById('changePasswordModal').classList.add('hidden');
-
-        window.confirmPasswordChange = async function() {
-            let newPass = document.getElementById('targetNewPasswordInput').value.trim();
-            if (!newPass) { alert('أدخل كلمة سر صحيحة.'); return; }
-            try {
-                await updateDoc(doc(db, currentTarget.colName, currentTarget.id), { password: newPass });
-                alert('تم تحديث كلمة المرور بنجاح!');
-                closePasswordModal();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        // ميزة النسخ الاحتياطي الكامل (Full Backup)
-        window.downloadDatabaseBackup = async function() {
-            try {
-                let backupData = {
-                    date: new Date().toISOString(),
-                    vendeurs: window.allVendeursList,
-                    clients: window.allClientsList,
-                    orders: window.allOrdersList,
-                    activation_codes: window.allCodesList
-                };
-
-                let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-                let downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", `backup_tunisie_recharge_${new Date().toISOString().slice(0,10)}.json`);
-                document.body.appendChild(downloadAnchor);
-                downloadAnchor.click();
-                downloadAnchor.remove();
-            } catch (e) {
-                alert('حدث خطأ أثناء تنزيل النسخة الاحتياطية: ' + e.message);
-            }
-        };
-
-        checkAdminAuth();
     </script>
 </body>
 </html>
