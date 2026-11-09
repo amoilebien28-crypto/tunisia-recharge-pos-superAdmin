@@ -19,7 +19,7 @@
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
 
-    <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
+    <!-- شاشة تسجيل دخول الأدمن الرئيسي (admin / admin) -->
     <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-4">
             <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
@@ -45,7 +45,7 @@
 
     <!-- رأسية لوحة الأدمن -->
     <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
-        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-rose-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -55,61 +55,134 @@
                     <span class="text-[10px] text-slate-400 font-bold block" id="headerAdminDisplay">المسؤول: admin</span>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <!-- أزرار النسخ الاحتياطي والاسترجاع وتغيير كلمة المرور -->
-                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-key"></i> كلمة المرور
                 </button>
-                <button type="button" onclick="downloadBackupJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> تحميل نسخة (Backup)
-                </button>
-                <button type="button" onclick="triggerRestoreFileInput()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> استرجاع نسخة (Restaurer)
-                </button>
-                <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
-                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-xl text-xs font-bold transition">
+                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">
                     خروج
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 max-w-5xl space-y-6">
+    <!-- الواجهة الرئيسية: 4 أزرار كبيرة ومنظمة -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl space-y-6">
 
-        <!-- بطاقات إحصائيات النظام -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">عدد الموزعين:</span>
-                <h3 id="statTotalVendeurs" class="text-2xl font-black text-indigo-400 mt-1">0</h3>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">إجمالي الحوانت:</span>
-                <h3 id="statTotalClients" class="text-2xl font-black text-emerald-400 mt-1">0</h3>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">الطلبيات الجملية:</span>
-                <h3 id="statTotalOrders" class="text-2xl font-black text-amber-400 mt-1">0</h3>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <span class="text-xs text-slate-400 font-bold block">فواتير الشراء المسجلة:</span>
-                <h3 id="statTotalInvoices" class="text-2xl font-black text-rose-400 mt-1">0</h3>
-            </div>
+        <div class="text-center space-y-2 mb-6">
+            <h2 class="text-2xl font-black text-white">لوحة الإدارة المركزية والتحكم</h2>
+            <p class="text-xs text-slate-400 font-bold">اختر القسم الذي تريد إدارته من الأزرار التالية:</p>
         </div>
 
-        <!-- قسم إدارة البائعين (الفوندورات) والاشتراكات -->
-        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-4">
-                <div>
-                    <h3 class="text-base font-black text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear text-indigo-400"></i> إدارة حسابات واشتراكات الموزعين
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد الاشتراك، وتغيير كلمة المرور</p>
-                </div>
-                <button type="button" onclick="loadAllSystemData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold transition">
-                    <i class="fa-solid fa-rotate-right ml-1"></i> تحديث
-                </button>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+            <!-- الزر 1: إحصائيات النظام العامة -->
+            <button type="button" onclick="openAdminModal('modalStats')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-indigo-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-indigo-500/20 text-indigo-400 p-4 rounded-2xl text-3xl border border-indigo-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">1. إحصائيات النظام العامة</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">عدد الموزعين، إجمالي الحوانت، الطلبيات، والفواتير</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-indigo-400 text-xl transition"></i>
+            </button>
+
+            <!-- الزر 2: إدارة حسابات واشتراكات الموزعين -->
+            <button type="button" onclick="openAdminModal('modalVendeurs')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-emerald-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-3xl border border-emerald-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">2. إدارة واشتراكات الموزعين</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل، تعطيل، تجديد الاشتراكات، وتعديل الكود</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-emerald-400 text-xl transition"></i>
+            </button>
+
+            <!-- الزر 3: قاعدة بيانات التجار (الحوانت) -->
+            <button type="button" onclick="openAdminModal('modalClients')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-amber-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-500/20 text-amber-400 p-4 rounded-2xl text-3xl border border-amber-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">3. قاعدة بيانات التجار (الحوانت)</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">عرض الحوانت، البحث، ومتابعة كلمات المرور ومشاكل الدخول</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-amber-400 text-xl transition"></i>
+            </button>
+
+            <!-- الزر 4: النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
+            <button type="button" onclick="openAdminModal('modalBackup')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-rose-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-rose-500/20 text-rose-400 p-4 rounded-2xl text-3xl border border-rose-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">4. النسخ الاحتياطي والاسترجاع</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تحميل نسخة من كامل قاعدة البيانات أو استرجاعها</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-rose-400 text-xl transition"></i>
+            </button>
+
+        </div>
+    </main>
+
+    <!-- 1. نافذة إحصائيات النظام -->
+    <div id="modalStats" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-2xl w-full border border-slate-700 space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h4 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-indigo-400"></i> إحصائيات النظام العامة
+                </h4>
+                <button type="button" onclick="closeAdminModal('modalStats')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
+                    <span class="text-xs text-slate-400 font-bold block">عدد الموزعين:</span>
+                    <h3 id="statTotalVendeurs" class="text-2xl font-black text-indigo-400 mt-1">0</h3>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
+                    <span class="text-xs text-slate-400 font-bold block">إجمالي الحوانت:</span>
+                    <h3 id="statTotalClients" class="text-2xl font-black text-emerald-400 mt-1">0</h3>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
+                    <span class="text-xs text-slate-400 font-bold block">الطلبيات الجملية:</span>
+                    <h3 id="statTotalOrders" class="text-2xl font-black text-amber-400 mt-1">0</h3>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
+                    <span class="text-xs text-slate-400 font-bold block">فواتير الشراء المسجلة:</span>
+                    <h3 id="statTotalInvoices" class="text-2xl font-black text-rose-400 mt-1">0</h3>
+                </div>
+            </div>
+            <button type="button" onclick="closeAdminModal('modalStats')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- 2. نافذة إدارة واشتراكات الموزعين -->
+    <div id="modalVendeurs" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <div>
+                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-emerald-400"></i> إدارة حسابات واشتراكات الموزعين
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد الاشتراك، وتعديل الكود</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="loadAllSystemData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold transition">
+                        <i class="fa-solid fa-rotate-right ml-1"></i> تحديث
+                    </button>
+                    <button type="button" onclick="closeAdminModal('modalVendeurs')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                </div>
+            </div>
             <div class="overflow-x-auto">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
@@ -127,20 +200,25 @@
                     </tbody>
                 </table>
             </div>
+            <button type="button" onclick="closeAdminModal('modalVendeurs')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
+    </div>
 
-        <!-- قسم البحث والتعديل في الحوانت (Clients) لجميع الموزعين -->
-        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 space-y-4">
-            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-4">
+    <!-- 3. نافذة قاعدة بيانات الحوانت -->
+    <div id="modalClients" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
                 <div>
-                    <h3 class="text-base font-black text-white flex items-center gap-2">
-                        <i class="fa-solid fa-store text-emerald-400"></i> قاعدة بيانات التجار (الحوانت)
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">البحث وإصلاح كلمات المرور ومشاكل الدخول</p>
+                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-store text-amber-400"></i> قاعدة بيانات التجار (الحوانت)
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-0.5">البحث ومتابعة وتعديل كلمات المرور</p>
                 </div>
-                <input type="text" id="clientSearchInput" oninput="filterClientsTable()" placeholder="ابحث باسم الحانوت أو الهاتف..." class="bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 w-full md:w-64">
+                <div class="flex items-center gap-2">
+                    <input type="text" id="clientSearchInput" oninput="filterClientsTable()" placeholder="ابحث باسم الحانوت أو الهاتف..." class="bg-slate-900 border border-slate-700 p-2 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 w-48 md:w-60">
+                    <button type="button" onclick="closeAdminModal('modalClients')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                </div>
             </div>
-
             <div class="overflow-x-auto max-h-80 overflow-y-auto">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
@@ -158,9 +236,34 @@
                     </tbody>
                 </table>
             </div>
+            <button type="button" onclick="closeAdminModal('modalClients')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
+    </div>
 
-    </main>
+    <!-- 4. نافذة النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
+    <div id="modalBackup" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h4 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-database text-rose-400"></i> النسخ الاحتياطي والاسترجاع
+                </h4>
+                <button type="button" onclick="closeAdminModal('modalBackup')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                يمكنك تحميل نسخة احتياطية كاملة من قاعدة البيانات على جهازك بضغطة زر، أو استرجاع نسخة تم حفظها مسبقاً في أي وقت.
+            </p>
+            <div class="space-y-3 pt-2">
+                <button type="button" onclick="downloadBackupJSON()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-cloud-arrow-down text-base"></i> تحميل نسخة احتياطية كاملة (Backup JSON)
+                </button>
+                <button type="button" onclick="triggerRestoreFileInput()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-cloud-arrow-up text-base"></i> استرجاع نسخة من ملف (Restaurer JSON)
+                </button>
+                <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
+            </div>
+            <button type="button" onclick="closeAdminModal('modalBackup')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">إغلاق</button>
+        </div>
+    </div>
 
     <!-- نافذة تعديل كلمة مرور التاجر أو الفوندور -->
     <div id="editPassModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
@@ -227,7 +330,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات مع دوال الاسترجاع -->
+    <!-- السكربت والربط بقاعدة البيانات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -259,6 +362,17 @@
         window.allInvoices = [];
         window.targetEditItem = null;
         window.parsedRestoreData = null;
+
+        // إدارة فتح وإغلاق النوافذ
+        window.openAdminModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeAdminModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        };
 
         window.handleAdminLogin = function() {
             const enteredUser = (document.getElementById('adminUsernameInput').value || '').trim();
@@ -453,7 +567,6 @@
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        // دالة تنزيل النسخة الاحتياطية
         window.downloadBackupJSON = function() {
             const fullBackup = {
                 timestamp: new Date().toISOString(),
@@ -470,7 +583,6 @@
             dlAnchor.click();
         };
 
-        // دالة فتح نافذة اختيار ملف الاسترجاع
         window.triggerRestoreFileInput = function() {
             const input = document.getElementById('restoreFileInput');
             if (input) {
@@ -479,7 +591,6 @@
             }
         };
 
-        // قراءة ملف النسخة والتحقق من محتواه
         window.handleRestoreFileSelected = function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -495,7 +606,6 @@
 
                     window.parsedRestoreData = data;
 
-                    // عرض ملخص السجلات للمسؤول قبل التأكيد
                     const vCount = (data.vendeurs || []).length;
                     const cCount = (data.clients || []).length;
                     const oCount = (data.orders || []).length;
@@ -525,7 +635,6 @@
             window.parsedRestoreData = null;
         };
 
-        // تنفيذ استرجاع البيانات ورفعها لـ Firestore
         window.executeDatabaseRestore = async function() {
             if (!window.parsedRestoreData) return;
             const data = window.parsedRestoreData;
@@ -552,7 +661,7 @@
                     for (let item of col.items) {
                         const docId = item.id;
                         let itemData = { ...item };
-                        delete itemData.id; // لا نحفظ id داخل الوثيقة كحقل مكرر
+                        delete itemData.id;
 
                         if (docId) {
                             await setDoc(doc(db, col.name, docId), itemData, { merge: true });
@@ -569,6 +678,7 @@
                 statusText.innerText = 'تم استرجاع كافة البيانات بنجاح 100%!';
                 alert('اكتملت عملية استرجاع النسخة الاحتياطية بنجاح تام وتم تحديث قاعدة البيانات.');
                 closeConfirmRestoreModal();
+                closeAdminModal('modalBackup');
                 window.loadAllSystemData();
 
             } catch (err) {
