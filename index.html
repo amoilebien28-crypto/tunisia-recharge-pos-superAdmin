@@ -19,7 +19,7 @@
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
 
-    <!-- شاشة تسجيل دخول الأدمن الرئيسي (admin / admin) -->
+    <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
     <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-4">
             <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
@@ -45,7 +45,7 @@
 
     <!-- رأسية لوحة الأدمن -->
     <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-rose-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -55,15 +55,19 @@
                     <span class="text-[10px] text-slate-400 font-bold block" id="headerAdminDisplay">المسؤول: admin</span>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <!-- زر تغيير كلمة مرور الأدمن -->
-                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-key"></i> تغيير كلمة المرور
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- أزرار النسخ الاحتياطي والاسترجاع وتغيير كلمة المرور -->
+                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-key"></i> كلمة المرور
                 </button>
-                <button type="button" onclick="downloadBackupJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> نسخة احتياطية (Backup)
+                <button type="button" onclick="downloadBackupJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> تحميل نسخة (Backup)
                 </button>
-                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                <button type="button" onclick="triggerRestoreFileInput()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> استرجاع نسخة (Restaurer)
+                </button>
+                <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
+                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-xl text-xs font-bold transition">
                     خروج
                 </button>
             </div>
@@ -173,7 +177,7 @@
         </div>
     </div>
 
-    <!-- نافذة تغيير اسم وكلمة مرور المسؤول المركزي (Super Admin) -->
+    <!-- نافذة تغيير بيانات دخول المسؤول -->
     <div id="changeAdminCredsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
@@ -193,16 +197,40 @@
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ البيانات الجديدة</button>
+                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
                 <button type="button" onclick="closeChangeAdminCredentialsModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات -->
+    <!-- نافذة تأكيد استرجاع النسخة الاحتياطية -->
+    <div id="confirmRestoreModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4 text-slate-100">
+            <div class="flex items-center gap-3 text-amber-400 border-b border-slate-700 pb-3">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <div>
+                    <h4 class="font-black text-sm text-white">تأكيد استرجاع النسخة الاحتياطية</h4>
+                    <p class="text-[11px] text-slate-400">سيتم استرجاع السجلات التالية إلى قاعدة البيانات:</p>
+                </div>
+            </div>
+            <div id="restoreSummaryContent" class="space-y-2 text-xs bg-slate-900 p-4 rounded-2xl border border-slate-700 font-mono"></div>
+            <div id="restoreProgressDiv" class="hidden space-y-2">
+                <p id="restoreStatusText" class="text-xs text-amber-400 font-bold text-center">جاري الاسترجاع، الرجاء الانتظار...</p>
+                <div class="w-full bg-slate-700 rounded-full h-2.5">
+                    <div id="restoreProgressBar" class="bg-emerald-500 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2" id="restoreActionButtons">
+                <button type="button" onclick="executeDatabaseRestore()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">تأكيد وبدء الاسترجاع</button>
+                <button type="button" onclick="closeConfirmRestoreModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- السكربت والربط بقاعدة البيانات مع دوال الاسترجاع -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYNDYcwlmX5rdnpXyGoHR48g-T6h_oHFk",
@@ -217,7 +245,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // استرجاع بيانات المسؤول المحفوظة، أو استخدام الافتراضية admin / admin
         function getStoredAdminCreds() {
             const stored = localStorage.getItem('superAdminCreds');
             if (stored) {
@@ -231,8 +258,8 @@
         window.allOrders = [];
         window.allInvoices = [];
         window.targetEditItem = null;
+        window.parsedRestoreData = null;
 
-        // تسجيل الدخول بالاسم والكود
         window.handleAdminLogin = function() {
             const enteredUser = (document.getElementById('adminUsernameInput').value || '').trim();
             const enteredPass = (document.getElementById('adminMasterPass').value || '').trim();
@@ -253,7 +280,6 @@
             location.reload();
         };
 
-        // فتح وإغلاق نافذة تغيير كلمة المرور للمسؤول
         window.openChangeAdminCredentialsModal = function() {
             const current = getStoredAdminCreds();
             document.getElementById('newAdminUsernameInput').value = current.user;
@@ -265,17 +291,13 @@
             document.getElementById('changeAdminCredsModal').classList.add('hidden');
         };
 
-        // حفظ الاسم وكلمة المرور الجديدة في الذاكرة
         window.saveNewAdminCredentials = function() {
             const newUser = document.getElementById('newAdminUsernameInput').value.trim();
             const newPass = document.getElementById('newAdminPasswordInput').value.trim();
-            if (!newUser || !newPass) {
-                alert('الرجاء إدخال الاسم وكلمة المرور.');
-                return;
-            }
+            if (!newUser || !newPass) { alert('الرجاء إدخال الاسم وكلمة المرور.'); return; }
             localStorage.setItem('superAdminCreds', JSON.stringify({ user: newUser, pass: newPass }));
             document.getElementById('headerAdminDisplay').innerText = `المسؤول: ${newUser}`;
-            alert('تم تحديث بيانات المسؤول بنجاح! استخدم البيانات الجديدة في الدخول القادم.');
+            alert('تم حفظ بيانات المسؤول بنجاح!');
             closeChangeAdminCredentialsModal();
         };
 
@@ -431,6 +453,7 @@
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
+        // دالة تنزيل النسخة الاحتياطية
         window.downloadBackupJSON = function() {
             const fullBackup = {
                 timestamp: new Date().toISOString(),
@@ -447,7 +470,113 @@
             dlAnchor.click();
         };
 
-        // التحقق من الجلسة عند الدخول
+        // دالة فتح نافذة اختيار ملف الاسترجاع
+        window.triggerRestoreFileInput = function() {
+            const input = document.getElementById('restoreFileInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        };
+
+        // قراءة ملف النسخة والتحقق من محتواه
+        window.handleRestoreFileSelected = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (!data.vendeurs && !data.clients && !data.orders && !data.invoices) {
+                        alert('الملف المختار ليس ملف نسخة احتياطية صالح لنظام كروت الشحن.');
+                        return;
+                    }
+
+                    window.parsedRestoreData = data;
+
+                    // عرض ملخص السجلات للمسؤول قبل التأكيد
+                    const vCount = (data.vendeurs || []).length;
+                    const cCount = (data.clients || []).length;
+                    const oCount = (data.orders || []).length;
+                    const iCount = (data.invoices || []).length;
+
+                    document.getElementById('restoreSummaryContent').innerHTML = `
+                        <div>📁 تاريخ النسخة: ${data.timestamp ? new Date(data.timestamp).toLocaleString() : 'غير محدد'}</div>
+                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${vCount}</span></div>
+                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${cCount}</span></div>
+                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${oCount}</span></div>
+                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${iCount}</span></div>
+                    `;
+
+                    document.getElementById('restoreProgressDiv').classList.add('hidden');
+                    document.getElementById('restoreActionButtons').classList.remove('hidden');
+                    document.getElementById('confirmRestoreModal').classList.remove('hidden');
+
+                } catch (err) {
+                    alert('خطأ أثناء قراءة ملف JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.closeConfirmRestoreModal = function() {
+            document.getElementById('confirmRestoreModal').classList.add('hidden');
+            window.parsedRestoreData = null;
+        };
+
+        // تنفيذ استرجاع البيانات ورفعها لـ Firestore
+        window.executeDatabaseRestore = async function() {
+            if (!window.parsedRestoreData) return;
+            const data = window.parsedRestoreData;
+
+            document.getElementById('restoreActionButtons').classList.add('hidden');
+            document.getElementById('restoreProgressDiv').classList.remove('hidden');
+
+            const statusText = document.getElementById('restoreStatusText');
+            const progressBar = document.getElementById('restoreProgressBar');
+
+            try {
+                let collectionsToRestore = [
+                    { name: "vendeurs", items: data.vendeurs || [] },
+                    { name: "clients", items: data.clients || [] },
+                    { name: "orders", items: data.orders || [] },
+                    { name: "invoices", items: data.invoices || [] }
+                ];
+
+                let totalItems = collectionsToRestore.reduce((acc, curr) => acc + curr.items.length, 0);
+                let processedItems = 0;
+
+                for (let col of collectionsToRestore) {
+                    statusText.innerText = `جاري استرجاع مجموعة: ${col.name}...`;
+                    for (let item of col.items) {
+                        const docId = item.id;
+                        let itemData = { ...item };
+                        delete itemData.id; // لا نحفظ id داخل الوثيقة كحقل مكرر
+
+                        if (docId) {
+                            await setDoc(doc(db, col.name, docId), itemData, { merge: true });
+                        } else {
+                            await addDoc(collection(db, col.name), itemData);
+                        }
+
+                        processedItems++;
+                        let percent = Math.round((processedItems / totalItems) * 100);
+                        progressBar.style.width = `${percent}%`;
+                    }
+                }
+
+                statusText.innerText = 'تم استرجاع كافة البيانات بنجاح 100%!';
+                alert('اكتملت عملية استرجاع النسخة الاحتياطية بنجاح تام وتم تحديث قاعدة البيانات.');
+                closeConfirmRestoreModal();
+                window.loadAllSystemData();
+
+            } catch (err) {
+                alert('حدث خطأ أثناء استرجاع البيانات: ' + err.message);
+                document.getElementById('restoreActionButtons').classList.remove('hidden');
+            }
+        };
+
         if (sessionStorage.getItem('superAdminAuth') === 'true') {
             const loginScr = document.getElementById('adminLoginScreen');
             if (loginScr) loginScr.classList.add('hidden');
