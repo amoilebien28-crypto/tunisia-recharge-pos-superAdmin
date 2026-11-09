@@ -19,20 +19,27 @@
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
 
-    <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
+    <!-- شاشة تسجيل دخول الأدمن الرئيسي (admin / admin) -->
     <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-5">
+        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-4">
             <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
                 <i class="fa-solid fa-user-shield"></i>
             </div>
             <div>
                 <h2 class="text-xl font-black text-white">الإدارة المركزية (Super Admin)</h2>
-                <p class="text-xs text-slate-400 mt-1">الرجاء إدخال الرمز السري للتحكم بالنظام</p>
+                <p class="text-xs text-slate-400 mt-1">الرجاء إدخال اسم المسؤول وكلمة المرور</p>
             </div>
-            <div>
-                <input type="password" id="adminMasterPass" placeholder="رمز الدخول السري..." class="w-full bg-slate-900 border border-slate-700 p-3.5 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
+            <div class="space-y-3 text-right">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم المسؤول:</label>
+                    <input type="text" id="adminUsernameInput" placeholder="أدخل اسم المسؤول..." value="admin" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور:</label>
+                    <input type="password" id="adminMasterPass" placeholder="أدخل كلمة المرور..." value="admin" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
+                </div>
             </div>
-            <button type="button" onclick="handleAdminLogin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold text-sm shadow-md transition">دخول لوحة التحكم</button>
+            <button type="button" onclick="handleAdminLogin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold text-sm shadow-md transition mt-2">دخول لوحة التحكم</button>
         </div>
     </div>
 
@@ -45,10 +52,14 @@
                 </div>
                 <div>
                     <h1 class="text-base font-black text-white">منصة المراقبة والتحكم المركزي</h1>
-                    <span class="text-[10px] text-slate-400 font-bold block">إدارة التراخيص والنسخ الاحتياطي</span>
+                    <span class="text-[10px] text-slate-400 font-bold block" id="headerAdminDisplay">المسؤول: admin</span>
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <!-- زر تغيير كلمة مرور الأدمن -->
+                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-key"></i> تغيير كلمة المرور
+                </button>
                 <button type="button" onclick="downloadBackupJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-cloud-arrow-down"></i> نسخة احتياطية (Backup)
                 </button>
@@ -147,7 +158,7 @@
 
     </main>
 
-    <!-- نافذة تعديل كلمة المرور -->
+    <!-- نافذة تعديل كلمة مرور التاجر أو الفوندور -->
     <div id="editPassModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
             <h4 id="editPassTitle" class="font-bold text-sm text-white">تعديل كلمة المرور</h4>
@@ -158,6 +169,32 @@
             <div class="flex gap-2">
                 <button type="button" onclick="saveUpdatedPassword()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
                 <button type="button" onclick="closeEditPassModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تغيير اسم وكلمة مرور المسؤول المركزي (Super Admin) -->
+    <div id="changeAdminCredsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-500"></i> تغيير بيانات دخول المسؤول
+                </h4>
+                <button type="button" onclick="closeChangeAdminCredentialsModal()" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <div class="space-y-3 text-right">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم المسؤول الجديد:</label>
+                    <input type="text" id="newAdminUsernameInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور الجديدة:</label>
+                    <input type="text" id="newAdminPasswordInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ البيانات الجديدة</button>
+                <button type="button" onclick="closeChangeAdminCredentialsModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
     </div>
@@ -180,8 +217,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // رمز الدخول السري للأدمن
-        const MASTER_ADMIN_PIN = "mourad2026";
+        // استرجاع بيانات المسؤول المحفوظة، أو استخدام الافتراضية admin / admin
+        function getStoredAdminCreds() {
+            const stored = localStorage.getItem('superAdminCreds');
+            if (stored) {
+                try { return JSON.parse(stored); } catch(e) {}
+            }
+            return { user: "admin", pass: "admin" };
+        }
 
         window.allVendeurs = [];
         window.allClients = [];
@@ -189,16 +232,19 @@
         window.allInvoices = [];
         window.targetEditItem = null;
 
-        // ربط الدوال صراحة بنطاق window لتعمل في أزرار HTML
+        // تسجيل الدخول بالاسم والكود
         window.handleAdminLogin = function() {
-            const passInput = document.getElementById('adminMasterPass');
-            const pass = passInput ? passInput.value.trim() : '';
-            if (pass === MASTER_ADMIN_PIN) {
+            const enteredUser = (document.getElementById('adminUsernameInput').value || '').trim();
+            const enteredPass = (document.getElementById('adminMasterPass').value || '').trim();
+            const currentCreds = getStoredAdminCreds();
+
+            if (enteredUser === currentCreds.user && enteredPass === currentCreds.pass) {
                 sessionStorage.setItem('superAdminAuth', 'true');
                 document.getElementById('adminLoginScreen').classList.add('hidden');
+                document.getElementById('headerAdminDisplay').innerText = `المسؤول: ${currentCreds.user}`;
                 window.loadAllSystemData();
             } else {
-                alert('رمز الدخول غير صحيح.');
+                alert('اسم المسؤول أو كلمة المرور غير صحيحة.');
             }
         };
 
@@ -207,9 +253,34 @@
             location.reload();
         };
 
+        // فتح وإغلاق نافذة تغيير كلمة المرور للمسؤول
+        window.openChangeAdminCredentialsModal = function() {
+            const current = getStoredAdminCreds();
+            document.getElementById('newAdminUsernameInput').value = current.user;
+            document.getElementById('newAdminPasswordInput').value = current.pass;
+            document.getElementById('changeAdminCredsModal').classList.remove('hidden');
+        };
+
+        window.closeChangeAdminCredentialsModal = function() {
+            document.getElementById('changeAdminCredsModal').classList.add('hidden');
+        };
+
+        // حفظ الاسم وكلمة المرور الجديدة في الذاكرة
+        window.saveNewAdminCredentials = function() {
+            const newUser = document.getElementById('newAdminUsernameInput').value.trim();
+            const newPass = document.getElementById('newAdminPasswordInput').value.trim();
+            if (!newUser || !newPass) {
+                alert('الرجاء إدخال الاسم وكلمة المرور.');
+                return;
+            }
+            localStorage.setItem('superAdminCreds', JSON.stringify({ user: newUser, pass: newPass }));
+            document.getElementById('headerAdminDisplay').innerText = `المسؤول: ${newUser}`;
+            alert('تم تحديث بيانات المسؤول بنجاح! استخدم البيانات الجديدة في الدخول القادم.');
+            closeChangeAdminCredentialsModal();
+        };
+
         window.loadAllSystemData = async function() {
             try {
-                // جلب المجموعات مع معالجة كل كولكشن على حدة لتفادي توقف الصفحة في حال وجود خطأ في كولكشن واحد
                 try {
                     const vSnap = await getDocs(collection(db, "vendeurs"));
                     window.allVendeurs = [];
@@ -376,10 +447,13 @@
             dlAnchor.click();
         };
 
-        // التحقق من حالة الدخول عند فتح الصفحة
+        // التحقق من الجلسة عند الدخول
         if (sessionStorage.getItem('superAdminAuth') === 'true') {
             const loginScr = document.getElementById('adminLoginScreen');
             if (loginScr) loginScr.classList.add('hidden');
+            const current = getStoredAdminCreds();
+            const headerDisplay = document.getElementById('headerAdminDisplay');
+            if (headerDisplay) headerDisplay.innerText = `المسؤول: ${current.user}`;
             window.loadAllSystemData();
         }
     </script>
