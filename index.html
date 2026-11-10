@@ -392,6 +392,74 @@
         </div>
     </div>
 
+    <!-- نافذة تعديل بيانات الموزع الكاملة (الاسم، الولاية، الهاتف، الكود، وكلمة المرور ونهاية الاشتراك) -->
+    <div id="editFullVendeurModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen text-amber-400"></i> تعديل بيانات الموزع
+                </h4>
+                <button type="button" onclick="closeEditFullVendeurModal()" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <input type="hidden" id="editFullVendeurId">
+            <div class="space-y-3 text-right text-xs">
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">اسم الموزع:</label>
+                    <input type="text" id="editFullVendeurName" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">الولاية (Gouvernorat):</label>
+                    <select id="editFullVendeurGov" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-500">
+                        <option value="مدنين">مدنين</option>
+                        <option value="قابس">قابس</option>
+                        <option value="تطاوين">تطاوين</option>
+                        <option value="قبلي">قبلي</option>
+                        <option value="توزر">توزر</option>
+                        <option value="قفصة">قفصة</option>
+                        <option value="صفاقس">صفاقس</option>
+                        <option value="سيدي بوزيد">سيدي بوزيد</option>
+                        <option value="القصرين">القصرين</option>
+                        <option value="القيروان">القيروان</option>
+                        <option value="المهدية">المهدية</option>
+                        <option value="المنستير">المنستير</option>
+                        <option value="سوسة">سوسة</option>
+                        <option value="نابل">نابل</option>
+                        <option value="زغوان">زغوان</option>
+                        <option value="سليانة">سليانة</option>
+                        <option value="الكاف">الكاف</option>
+                        <option value="جندوبة">جندوبة</option>
+                        <option value="باجة">باجة</option>
+                        <option value="بنزرت">بنزرت</option>
+                        <option value="أريانة">أريانة</option>
+                        <option value="منوبة">منوبة</option>
+                        <option value="تونس">تونس</option>
+                        <option value="بن عروس">بن عروس</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">رقم الهاتف:</label>
+                    <input type="tel" id="editFullVendeurPhone" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">معرف الموزع (ID):</label>
+                    <input type="text" id="editFullVendeurCode" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl font-mono font-bold text-amber-400 text-center">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">كلمة المرور:</label>
+                    <input type="text" id="editFullVendeurPass" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-mono font-bold text-emerald-400 text-center">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">تاريخ نهاية الاشتراك:</label>
+                    <input type="date" id="editFullVendeurExpiry" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-bold text-white text-center focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="saveFullVendeurEdit()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">حفظ التعديلات</button>
+                <button type="button" onclick="closeEditFullVendeurModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- نافذة النجاح وعرض بيانات الحساب الكبيرة والواضحة مع خاصية النسخ -->
     <div id="vendeurCreatedSuccessModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-800 p-6 md:p-8 rounded-3xl max-w-lg w-full border-2 border-emerald-500/50 space-y-5 text-slate-100 shadow-2xl">
@@ -729,6 +797,58 @@
             window.lastCreatedVendeur = null;
         };
 
+        // فتح نافذة تعديل بيانات الموزع الشاملة
+        window.openEditFullVendeurModal = function(id) {
+            const v = window.allVendeurs.find(item => item.id === id);
+            if (!v) return;
+
+            document.getElementById('editFullVendeurId').value = v.id;
+            document.getElementById('editFullVendeurName').value = v.name || '';
+            document.getElementById('editFullVendeurGov').value = v.governorate || 'مدنين';
+            document.getElementById('editFullVendeurPhone').value = v.phone || '';
+            document.getElementById('editFullVendeurCode').value = v.vendeurCode || '';
+            document.getElementById('editFullVendeurPass').value = v.password || '';
+            document.getElementById('editFullVendeurExpiry').value = v.expiryDate ? v.expiryDate.slice(0, 10) : '';
+
+            document.getElementById('editFullVendeurModal').classList.remove('hidden');
+        };
+
+        window.closeEditFullVendeurModal = function() {
+            document.getElementById('editFullVendeurModal').classList.add('hidden');
+        };
+
+        // حفظ التعديلات الشاملة للموزع
+        window.saveFullVendeurEdit = async function() {
+            const id = document.getElementById('editFullVendeurId').value;
+            const name = document.getElementById('editFullVendeurName').value.trim();
+            const governorate = document.getElementById('editFullVendeurGov').value;
+            const phone = document.getElementById('editFullVendeurPhone').value.trim();
+            const code = document.getElementById('editFullVendeurCode').value.trim();
+            const password = document.getElementById('editFullVendeurPass').value.trim();
+            const expiryDate = document.getElementById('editFullVendeurExpiry').value;
+
+            if (!name || !phone || !code || !password) {
+                alert("الرجاء ملء كافة البيانات الأساسية للموزع.");
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "vendeurs", id), {
+                    name,
+                    governorate,
+                    phone,
+                    vendeurCode: code,
+                    password,
+                    expiryDate: expiryDate ? new Date(expiryDate).toISOString() : ''
+                });
+                alert("تم تحديث كافة بيانات الموزع بنجاح!");
+                closeEditFullVendeurModal();
+                window.loadAllSystemData();
+            } catch (e) {
+                alert("خطأ أثناء حفظ التعديلات: " + e.message);
+            }
+        };
+
         // نسخ حقل واحد منفرد
         window.copyIndividualItem = function(elementId, labelName) {
             const text = document.getElementById(elementId).innerText.trim();
@@ -789,7 +909,7 @@ ${govLine}👤 معرف الدخول (ID): ${code}
             window.open(url, '_blank');
         };
 
-        // رسم جدول الموزعين مع إظهار الولاية
+        // رسم جدول الموزعين مع أزرار (+ شهر) و (+ سنة) والتعديل الكامل
         function renderVendeursTable() {
             let html = '';
             window.allVendeurs.forEach(v => {
@@ -823,10 +943,13 @@ ${govLine}👤 معرف الدخول (ID): ${code}
                             <button type="button" onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
                                 ${isActive ? 'تعطيل' : 'تفعيل'}
                             </button>
-                            <button type="button" onclick="renewSubscription('${v.id}', 30)" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold text-white">
+                            <button type="button" onclick="renewSubscription('${v.id}', 30)" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold text-white" title="زيادة 30 يوماً تراكمياً">
                                 + شهر
                             </button>
-                            <button type="button" onclick="openEditPass('vendeur', '${v.id}', '${v.name || ''}', '${v.password || ''}')" class="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
+                            <button type="button" onclick="renewSubscription('${v.id}', 365)" class="px-2 py-1 rounded bg-cyan-600 hover:bg-cyan-700 text-[10px] font-bold text-white" title="زيادة 365 يوماً تراكمياً">
+                                + سنة
+                            </button>
+                            <button type="button" onclick="openEditFullVendeurModal('${v.id}')" class="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white" title="تعديل كافة بيانات الموزع">
                                 تعديل
                             </button>
                         </td>
@@ -916,15 +1039,26 @@ ${govLine}👤 معرف الدخول (ID): ${code}
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
+        // التمديد التراكمي الذكي لاشتراك الموزع (+ شهر أو + سنة)
         window.renewSubscription = async function(id, days) {
             try {
-                const now = new Date();
-                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
+                const v = window.allVendeurs.find(item => item.id === id);
+                let baseDate = new Date();
+
+                // إذا كان للموزع تاريخ انتهاء ما زال في المستقبل، نضيف الأيام فوقه تراكمياً
+                if (v && v.expiryDate) {
+                    const currentExpiry = new Date(v.expiryDate);
+                    if (currentExpiry > baseDate) {
+                        baseDate = currentExpiry;
+                    }
+                }
+
+                const newDate = new Date(baseDate.getTime() + (days * 24 * 60 * 60 * 1000));
                 await updateDoc(doc(db, "vendeurs", id), { 
                     isActive: true, 
                     expiryDate: newDate.toISOString() 
                 });
-                alert(`تم تمديد اشتراك الموزع بنجاح لمدة ${days} يوماً.`);
+                alert(`تم تمديد اشتراك الموزع بنجاح لمدة ${days} يوماً.\nالتاريخ الجديد: ${newDate.toLocaleDateString('ar-TN')}`);
                 window.loadAllSystemData();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
@@ -937,15 +1071,25 @@ ${govLine}👤 معرف الدخول (ID): ${code}
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
+        // التمديد التراكمي الذكي لاشتراك الحانوت (+ شهر أو + سنة)
         window.renewClientSubscription = async function(id, days) {
             try {
-                const now = new Date();
-                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
+                const c = window.allClients.find(item => item.id === id);
+                let baseDate = new Date();
+
+                if (c && c.subscriptionExpiry) {
+                    const currentExpiry = new Date(c.subscriptionExpiry);
+                    if (currentExpiry > baseDate) {
+                        baseDate = currentExpiry;
+                    }
+                }
+
+                const newDate = new Date(baseDate.getTime() + (days * 24 * 60 * 60 * 1000));
                 await updateDoc(doc(db, "clients", id), { 
                     isSubscribed: true, 
                     subscriptionExpiry: newDate.toISOString() 
                 });
-                alert(`تم تمديد اشتراك التاجر الرمزي بنجاح لمدة ${days} يوماً.`);
+                alert(`تم تمديد اشتراك التاجر الرمزي بنجاح لمدة ${days} يوماً.\nالتاريخ الجديد: ${newDate.toLocaleDateString('ar-TN')}`);
                 window.loadAllSystemData();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
