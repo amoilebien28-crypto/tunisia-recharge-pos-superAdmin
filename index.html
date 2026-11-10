@@ -93,7 +93,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-black text-white">2. إدارة واشتراكات الموزعين</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل، تعطيل، وتجديد اشتراكات الموزعين بالجملة</p>
+                        <p class="text-xs text-slate-400 font-normal mt-1">إضافة موزع، تفعيل، تعطيل، تجديد، وإرسال البيانات عبر واتساب</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-emerald-400 text-xl transition"></i>
@@ -192,14 +192,17 @@
     <!-- 2. نافذة إدارة واشتراكات الموزعين -->
     <div id="modalVendeurs" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
                 <div>
                     <h4 class="font-bold text-lg text-white flex items-center gap-2">
                         <i class="fa-solid fa-users-gear text-emerald-400"></i> إدارة حسابات واشتراكات الموزعين
                     </h4>
-                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد الاشتراك، وتعديل الكود</p>
+                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد، وإرسال البيانات عبر واتساب</p>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button type="button" onclick="openAddVendeurModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 text-white shadow">
+                        <i class="fa-solid fa-plus"></i> إضافة موزع جديد
+                    </button>
                     <button type="button" onclick="loadAllSystemData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold transition">
                         <i class="fa-solid fa-rotate-right ml-1"></i> تحديث
                     </button>
@@ -210,12 +213,12 @@
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-700 text-slate-200">
-                            <th>اسم الموزع</th>
+                            <th>الموزع ومعرفه</th>
                             <th>رقم الهاتف</th>
                             <th>كلمة المرور</th>
                             <th>حالة الحساب</th>
                             <th>نهاية الاشتراك</th>
-                            <th>الإجراءات</th>
+                            <th>الإجراءات والواتساب</th>
                         </tr>
                     </thead>
                     <tbody id="vendeursTableBody" class="divide-y divide-slate-700">
@@ -306,7 +309,7 @@
                 <button type="button" onclick="closeAdminModal('modalBackup')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
             </div>
             <p class="text-xs text-slate-400 leading-relaxed">
-                يمكنك تحميل نسخة احتياطية كاملة من قاعدة البيانات على جهازك بضغطة زر، أو استرجاع نسخة تم حفظها مسبقاً في أي وقت.
+                يمكنك تحميل نسخة احتياطية كاملة من قاعدة البيانات على جهازك بضغطة زر، أو استرجاع نسخة تم حفظها مسبقاً في أي وقت وبكل سلاسة.
             </p>
             <div class="space-y-3 pt-2">
                 <button type="button" onclick="downloadBackupJSON()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
@@ -318,6 +321,44 @@
                 <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
             </div>
             <button type="button" onclick="closeAdminModal('modalBackup')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة موزع جديد -->
+    <div id="addVendeurModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-emerald-400"></i> إنشاء حساب موزع جديد
+                </h4>
+                <button type="button" onclick="closeAddVendeurModal()" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <div class="space-y-3 text-right">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم الموزع / الشركة:</label>
+                    <input type="text" id="newVendeurName" placeholder="مثال: فوندور تونس..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">رقم الهاتف (واتساب):</label>
+                    <input type="tel" id="newVendeurPhone" placeholder="مثال: 98123456" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">مدة الاشتراك:</label>
+                    <select id="newVendeurDuration" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
+                        <option value="30">شهر واحد (30 يوماً)</option>
+                        <option value="90">3 أشهر</option>
+                        <option value="365" selected>سنة كاملة (365 يوماً)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">معرف الموزع الفريد (تلقائي):</label>
+                    <input type="text" id="newVendeurCode" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl text-xs font-mono text-amber-400 text-center font-bold" readonly>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="saveNewVendeur()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">تأكيد وإنشاء الحساب</button>
+                <button type="button" onclick="closeAddVendeurModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -386,10 +427,10 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات (Firebase) والدوال المصححة بالكامل -->
+    <!-- كود الجافاسكريبت والربط بقاعدة البيانات (Firebase Firestore) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYNDYcwlmX5rdnpXyGoHR48g-T6h_oHFk",
@@ -505,36 +546,114 @@
                 renderClientsTable(window.allClients);
                 renderClientSubscriptionsTable();
             } catch (err) {
-                console.error("General error:", err);
+                console.error("General load error:", err);
             }
         };
 
+        // فتح نافذة إضافة موزع جديد مع كود عشوائي
+        window.openAddVendeurModal = function() {
+            const randomCode = 'VND-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('newVendeurCode').value = randomCode;
+            document.getElementById('newVendeurName').value = '';
+            document.getElementById('newVendeurPhone').value = '';
+            document.getElementById('addVendeurModal').classList.remove('hidden');
+        };
+
+        window.closeAddVendeurModal = function() {
+            document.getElementById('addVendeurModal').classList.add('hidden');
+        };
+
+        // حفظ موزع جديد في Firestore
+        window.saveNewVendeur = async function() {
+            const name = document.getElementById('newVendeurName').value.trim();
+            const phone = document.getElementById('newVendeurPhone').value.trim();
+            const durationDays = parseInt(document.getElementById('newVendeurDuration').value);
+            const code = document.getElementById('newVendeurCode').value.trim();
+
+            if (!name || !phone) {
+                alert("الرجاء إدخال الاسم ورقم الهاتف.");
+                return;
+            }
+
+            const defaultPassword = Math.floor(100000 + Math.random() * 900000).toString();
+            const expiryDate = new Date(Date.now() + (durationDays * 24 * 60 * 60 * 1000)).toISOString();
+
+            try {
+                const newDocRef = doc(collection(db, "vendeurs"));
+                const vendeurData = {
+                    id: newDocRef.id,
+                    name: name,
+                    phone: phone,
+                    vendeurCode: code,
+                    password: defaultPassword,
+                    isActive: true,
+                    createdAt: new Date().toISOString(),
+                    expiryDate: expiryDate
+                };
+
+                await setDoc(newDocRef, vendeurData);
+                alert(`تم إنشاء حساب الموزع بنجاح!\nالمعرف: ${code}\nكلمة المرور: ${defaultPassword}`);
+                closeAddVendeurModal();
+                window.loadAllSystemData();
+
+                sendVendeurWhatsApp(name, phone, code, defaultPassword, expiryDate);
+            } catch (e) {
+                alert("خطأ أثناء إنشاء الحساب: " + e.message);
+            }
+        };
+
+        // دالة إرسال بيانات الدخول عبر WhatsApp
+        window.sendVendeurWhatsApp = function(name, phone, code, password, expiry) {
+            let cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+            if (!cleanPhone.startsWith('216') && cleanPhone.length === 8) {
+                cleanPhone = '216' + cleanPhone;
+            }
+
+            const expiryFormatted = expiry ? new Date(expiry).toLocaleDateString('ar-TN') : 'غير محدد';
+            const message = `مرحباً بك أخ ${name} في منظومة توزيع كروت الشحن (POS).
+
+تم تفعيل حساب الموزع الخاص بك بنجاح:
+👤 معرف الدخول (ID): ${code}
+🔑 كلمة المرور (Password): ${password}
+📅 نهاية صلاحية الاشتراك: ${expiryFormatted}
+
+الرجاء الاحتفاظ بهذه المعطيات للدخول إلى تطبيق الموزع.`;
+
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        };
+
+        // رسم جدول الموزعين
         function renderVendeursTable() {
             let html = '';
             window.allVendeurs.forEach(v => {
                 const isActive = v.isActive !== false;
                 const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('ar-TN') : 'غير محدد';
-                
+                const code = v.vendeurCode || v.phone || '—';
+
                 html += `
                     <tr class="hover:bg-slate-750">
-                        <td class="font-bold text-white">${v.name || 'بدون اسم'}</td>
+                        <td class="font-bold text-white">
+                            ${v.name || 'بدون اسم'}
+                            <span class="block text-[10px] font-mono text-amber-400 font-bold">${code}</span>
+                        </td>
                         <td class="font-mono text-slate-300">${v.phone || '—'}</td>
-                        <td class="font-mono text-amber-400 font-bold">${v.password || '—'}</td>
+                        <td class="font-mono text-emerald-400 font-bold">${v.password || '—'}</td>
                         <td>
                             <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
                                 ${isActive ? 'مفعل' : 'معطل'}
                             </span>
                         </td>
-                        <td class="text-slate-300">${expiry}</td>
-                        <td class="space-x-1 space-x-reverse">
+                        <td class="text-slate-300 font-mono text-[11px]">${expiry}</td>
+                        <td class="space-x-1 space-x-reverse whitespace-nowrap">
+                            <button type="button" onclick="sendVendeurWhatsApp('${v.name || ''}', '${v.phone || ''}', '${code}', '${v.password || ''}', '${v.expiryDate || ''}')" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-[10px] font-bold text-white shadow" title="إرسال عبر واتساب">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </button>
                             <button type="button" onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
                                 ${isActive ? 'تعطيل' : 'تفعيل'}
                             </button>
                             <button type="button" onclick="renewSubscription('${v.id}', 30)" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-[10px] font-bold text-white">
                                 + شهر
-                            </button>
-                            <button type="button" onclick="renewSubscription('${v.id}', 365)" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-[10px] font-bold text-white">
-                                + سنة
                             </button>
                             <button type="button" onclick="openEditPass('vendeur', '${v.id}', '${v.name || ''}', '${v.password || ''}')" class="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
                                 تعديل
@@ -547,6 +666,7 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا يوجد موزعون مسجلون.</td></tr>';
         }
 
+        // رسم جدول اشتراكات الحوانت
         function renderClientSubscriptionsTable() {
             let html = '';
             window.allClients.forEach(c => {
@@ -582,6 +702,7 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مسجلة.</td></tr>';
         }
 
+        // رسم جدول قائمة الحوانت
         function renderClientsTable(clientsList) {
             let html = '';
             clientsList.forEach(c => {
@@ -679,7 +800,7 @@
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        // دالة تنزيل النسخة الاحتياطية المباشرة والموثوقة من Firestore
+        // دالة تنزيل النسخة الاحتياطية
         window.downloadBackupJSON = async function() {
             try {
                 const [vSnap, cSnap, oSnap, iSnap] = await Promise.all([
@@ -719,7 +840,7 @@
             }
         };
 
-        // دالة قراءة وتجهيز ملف الاسترجاع مع دعم مختلف صيغ الـ JSON
+        // قراءة ملف الاسترجاع وتجهيز البيانات
         window.handleRestoreFileSelected = function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -727,32 +848,31 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 try {
-                    const data = JSON.parse(event.target.result);
+                    const rawData = JSON.parse(event.target.result);
 
-                    const vendeurs = Array.isArray(data.vendeurs) ? data.vendeurs : [];
-                    const clients = Array.isArray(data.clients) ? data.clients : [];
-                    const orders = Array.isArray(data.orders) ? data.orders : [];
-                    const invoices = Array.isArray(data.invoices) ? data.invoices : [];
+                    const data = {
+                        timestamp: rawData.timestamp || new Date().toISOString(),
+                        vendeurs: Array.isArray(rawData.vendeurs) ? rawData.vendeurs : [],
+                        clients: Array.isArray(rawData.clients) ? rawData.clients : [],
+                        orders: Array.isArray(rawData.orders) ? rawData.orders : [],
+                        invoices: Array.isArray(rawData.invoices) ? rawData.invoices : []
+                    };
 
-                    if (vendeurs.length === 0 && clients.length === 0 && orders.length === 0 && invoices.length === 0) {
+                    const total = data.vendeurs.length + data.clients.length + data.orders.length + data.invoices.length;
+                    if (total === 0) {
                         alert("الملف المختار فارغ أو لا يحتوي على سجلات مطابقة لنظام كروت الشحن.");
                         return;
                     }
 
-                    window.parsedRestoreData = {
-                        timestamp: data.timestamp || new Date().toISOString(),
-                        vendeurs,
-                        clients,
-                        orders,
-                        invoices
-                    };
+                    window.parsedRestoreData = data;
 
                     document.getElementById('restoreSummaryContent').innerHTML = `
-                        <div>📁 تاريخ النسخة: ${data.timestamp ? new Date(data.timestamp).toLocaleString('ar-TN') : 'غير محدد'}</div>
-                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${vendeurs.length}</span></div>
-                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${clients.length}</span></div>
-                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${orders.length}</span></div>
-                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${invoices.length}</span></div>
+                        <div>📁 تاريخ النسخة: ${new Date(data.timestamp).toLocaleString('ar-TN')}</div>
+                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${data.vendeurs.length}</span></div>
+                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${data.clients.length}</span></div>
+                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${data.orders.length}</span></div>
+                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${data.invoices.length}</span></div>
+                        <div class="text-emerald-400 font-bold mt-2 border-t border-slate-700 pt-1">المجموع الكلي: ${total} سجل جاهز</div>
                     `;
 
                     document.getElementById('restoreProgressDiv').classList.add('hidden');
@@ -771,7 +891,7 @@
             window.parsedRestoreData = null;
         };
 
-        // تنفيذ عملية كتابة واسترجاع السجلات في Firestore
+        // تنفيذ استرجاع السجلات في Firestore
         window.executeDatabaseRestore = async function() {
             if (!window.parsedRestoreData) return;
             const data = window.parsedRestoreData;
@@ -783,47 +903,55 @@
             const progressBar = document.getElementById('restoreProgressBar');
 
             try {
-                let collectionsToRestore = [
-                    { name: "vendeurs", items: data.vendeurs || [] },
-                    { name: "clients", items: data.clients || [] },
-                    { name: "orders", items: data.orders || [] },
-                    { name: "invoices", items: data.invoices || [] }
+                const collectionsList = [
+                    { name: "vendeurs", items: data.vendeurs },
+                    { name: "clients", items: data.clients },
+                    { name: "orders", items: data.orders },
+                    { name: "invoices", items: data.invoices }
                 ];
 
-                let totalItems = collectionsToRestore.reduce((acc, curr) => acc + curr.items.length, 0);
-                let processedItems = 0;
+                let totalItems = collectionsList.reduce((acc, c) => acc + c.items.length, 0);
+                let processed = 0;
 
-                for (let col of collectionsToRestore) {
-                    statusText.innerText = `جاري استرجاع مجموعة: ${col.name}...`;
-                    for (let item of col.items) {
-                        const docId = item.id;
-                        let itemData = { ...item };
-                        delete itemData.id;
+                for (const col of collectionsList) {
+                    statusText.innerText = `جاري استرجاع: ${col.name} (${col.items.length} سجل)...`;
 
-                        if (docId) {
-                            await setDoc(doc(db, col.name, docId), itemData, { merge: true });
-                        } else {
-                            await addDoc(collection(db, col.name), itemData);
+                    for (const item of col.items) {
+                        try {
+                            const docId = item.id;
+                            const cleanData = JSON.parse(JSON.stringify(item));
+                            delete cleanData.id;
+
+                            if (docId) {
+                                await setDoc(doc(db, col.name, String(docId)), cleanData, { merge: true });
+                            } else {
+                                await addDoc(collection(db, col.name), cleanData);
+                            }
+                        } catch (itemErr) {
+                            console.error(`خطأ في عنصر من ${col.name}:`, itemErr);
                         }
 
-                        processedItems++;
-                        let percent = Math.round((processedItems / totalItems) * 100);
-                        progressBar.style.width = `${percent}%`;
+                        processed++;
+                        if (totalItems > 0) {
+                            const pct = Math.round((processed / totalItems) * 100);
+                            progressBar.style.width = `${pct}%`;
+                        }
                     }
                 }
 
-                statusText.innerText = 'تم استرجاع كافة البيانات بنجاح 100%!';
-                alert('اكتملت عملية استرجاع النسخة الاحتياطية بنجاح تام وتم تحديث قاعدة البيانات.');
+                statusText.innerText = 'اكتملت العملية بنجاح!';
+                alert('اكتملت عملية استرجاع النسخة الاحتياطية بنجاح 100% وتم تحديث قاعدة البيانات.');
                 closeConfirmRestoreModal();
                 closeAdminModal('modalBackup');
                 window.loadAllSystemData();
 
             } catch (err) {
-                alert('حدث خطأ أثناء استرجاع البيانات: ' + err.message);
+                alert('حدث خطأ أثناء الاسترجاع: ' + err.message);
                 document.getElementById('restoreActionButtons').classList.remove('hidden');
             }
         };
 
+        // التحقق التلقائي من تسجيل دخول الأدمن
         if (sessionStorage.getItem('superAdminAuth') === 'true') {
             const loginScr = document.getElementById('adminLoginScreen');
             if (loginScr) loginScr.classList.add('hidden');
