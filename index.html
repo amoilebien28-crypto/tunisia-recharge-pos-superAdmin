@@ -12,492 +12,324 @@
             width: 100%;
         }
         table.custom-grid th, table.custom-grid td {
-            border: 1px solid #475569 !important;
+            border: 1px solid #334155 !important;
             padding: 8px 10px;
         }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
+<body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-16">
 
-    <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
-    <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <!-- شاشة تسجيل الدخول للسوبر أدمن -->
+    <div id="adminLoginScreen" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-4">
-            <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
-                <i class="fa-solid fa-user-shield"></i>
+            <div class="w-16 h-16 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30 shadow-lg">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div>
                 <h2 class="text-xl font-black text-white">الإدارة المركزية (Super Admin)</h2>
-                <p class="text-xs text-slate-400 mt-1">الرجاء إدخال اسم المسؤول وكلمة المرور</p>
+                <p class="text-xs text-slate-400 mt-1">الرجاء إدخال الرمز السري للإدارة للمتابعة</p>
             </div>
-            <div class="space-y-3 text-right">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم المسؤول:</label>
-                    <input type="text" id="adminUsernameInput" placeholder="أدخل اسم المسؤول..." value="admin" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور:</label>
-                    <input type="password" id="adminMasterPass" placeholder="أدخل كلمة المرور..." value="admin" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-center text-sm font-bold text-white focus:outline-none focus:border-rose-500">
-                </div>
+            <div>
+                <input type="password" id="adminPinInput" placeholder="أدخل الرمز السري..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-center text-lg font-bold text-white focus:outline-none focus:border-rose-500 tracking-widest font-mono">
             </div>
-            <button type="button" onclick="handleAdminLogin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold text-sm shadow-md transition mt-2">دخول لوحة التحكم</button>
+            <button type="button" onclick="handleAdminLogin()" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-bold text-sm shadow-lg transition">
+                تسجيل الدخول للوحة التحكم
+            </button>
         </div>
     </div>
 
-    <!-- رأسية لوحة الأدمن -->
+    <!-- رأسية لوحة التحكم -->
     <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-rose-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md">
-                    <i class="fa-solid fa-shield-halved"></i>
+                    <i class="fa-solid fa-crown"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-black text-white">منصة المراقبة والتحكم المركزي</h1>
-                    <span class="text-[10px] text-slate-400 font-bold block" id="headerAdminDisplay">المسؤول: admin</span>
+                    <h1 class="text-sm font-black text-white">منصة التحكم المركزي - Tunisie Recharge</h1>
+                    <span class="text-[11px] text-rose-400 font-bold block">فضاء Super Admin</span>
                 </div>
             </div>
-            <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                <i class="fa-solid fa-right-from-bracket"></i> خروج
-            </button>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="loadAllAdminData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 p-2 rounded-xl text-xs font-bold transition" title="تحديث البيانات">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button type="button" onclick="logoutAdmin()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800/50 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- الواجهة الرئيسية المنظمة بالأزرار الكبيرة -->
-    <main class="container mx-auto px-4 py-8 max-w-4xl space-y-6">
+    <!-- المحتوى الرئيسي -->
+    <main class="container mx-auto px-4 py-6 max-w-5xl space-y-6">
 
-        <div class="text-center space-y-2 mb-6">
-            <h2 class="text-2xl font-black text-white">لوحة الإدارة والتحكم في النظام</h2>
-            <p class="text-xs text-slate-400 font-bold">اختر القسم الذي تريد إدارته من الأزرار المخصصة أدناه:</p>
+        <!-- بطاقات الإحصائيات العامة -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+                <span class="text-[11px] text-slate-400 font-bold block">إجمالي الموزعين</span>
+                <h3 id="statTotalVendeurs" class="text-xl font-black text-indigo-400 mt-1">0</h3>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+                <span class="text-[11px] text-slate-400 font-bold block">الموزعين النشطين</span>
+                <h3 id="statActiveVendeurs" class="text-xl font-black text-emerald-400 mt-1">0</h3>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+                <span class="text-[11px] text-slate-400 font-bold block">إجمالي الحوانت</span>
+                <h3 id="statTotalClients" class="text-xl font-black text-cyan-400 mt-1">0</h3>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+                <span class="text-[11px] text-slate-400 font-bold block">الاشتراكات المنتهية</span>
+                <h3 id="statExpiredSubscriptions" class="text-xl font-black text-rose-400 mt-1">0</h3>
+            </div>
         </div>
 
+        <!-- أزرار الأقسام الرئيسية للـ Super Admin -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <!-- الزر 1: إحصائيات النظام العامة -->
-            <button type="button" onclick="openAdminModal('modalStats')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-indigo-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-indigo-500/20 text-indigo-400 p-4 rounded-2xl text-3xl border border-indigo-500/30 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-chart-pie"></i>
+            <!-- 1. إدارة واشتراكات الموزعين -->
+            <button type="button" onclick="openAdminSection('modalVendeursManagement')" class="text-right bg-slate-800 hover:bg-slate-750 border-2 border-indigo-500/40 p-5 rounded-2xl font-bold flex justify-between items-center transition shadow-md group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-500/20 text-indigo-400 p-3.5 rounded-xl text-2xl border border-indigo-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-white">1. إحصائيات النظام العامة</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">عدد الموزعين، الحوانت، الطلبيات، والفواتير المسجلة</p>
+                        <h3 class="text-base font-black text-white">إدارة واشتراكات الموزعين</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-0.5">إضافة موزع، الفلترة بالولاية، تفعيل الحسابات وتوليد كلمات المرور</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-indigo-400 text-xl transition"></i>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-indigo-400 transition"></i>
             </button>
 
-            <!-- الزر 2: إدارة واشتراكات الموزعين -->
-            <button type="button" onclick="openAdminModal('modalVendeurs')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-emerald-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-3xl border border-emerald-500/30 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-users-gear"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-white">2. إدارة واشتراكات الموزعين</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">إضافة موزع، تفعيل، تعطيل، تجديد، ونسخ بيانات الدخول</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-emerald-400 text-xl transition"></i>
-            </button>
-
-            <!-- الزر 3: إدارة واشتراكات التجار (الحوانت) -->
-            <button type="button" onclick="openAdminModal('modalClientSubscriptions')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-cyan-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-cyan-500/20 text-cyan-400 p-4 rounded-2xl text-3xl border border-cyan-500/30 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-id-card-clip"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-white">3. إدارة اشتراكات التجار (الحوانت)</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل وتجديد الاشتراكات الرمزية للحوانت المستعملة للتطبيق</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-cyan-400 text-xl transition"></i>
-            </button>
-
-            <!-- الزر 4: قائمة التجار (الحوانت) -->
-            <button type="button" onclick="openAdminModal('modalClients')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-amber-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-amber-500/20 text-amber-400 p-4 rounded-2xl text-3xl border border-amber-500/30 group-hover:scale-105 transition">
+            <!-- 2. إدارة واشتراكات تجار الحوانت -->
+            <button type="button" onclick="openAdminSection('modalClientsManagement')" class="text-right bg-slate-800 hover:bg-slate-750 border-2 border-emerald-500/40 p-5 rounded-2xl font-bold flex justify-between items-center transition shadow-md group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-500/20 text-emerald-400 p-3.5 rounded-xl text-2xl border border-emerald-500/30 group-hover:scale-105 transition">
                         <i class="fa-solid fa-store"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-white">4. قائمة التجار (الحوانت)</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">بحث شامل، وتعديل كلمات مرور الحوانت ومشاكل الدخول</p>
+                        <h3 class="text-base font-black text-white">إدارة واشتراكات تجار الحوانت</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-0.5">قائمة الحوانت، تتبع الموزع المسؤول، وتعديل كلمات المرور المنسية</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-amber-400 text-xl transition"></i>
-            </button>
-
-            <!-- الزر 5: النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
-            <button type="button" onclick="openAdminModal('modalBackup')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-rose-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-rose-500/20 text-rose-400 p-4 rounded-2xl text-3xl border border-rose-500/30 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-database"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-white">5. النسخ الاحتياطي والاسترجاع</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تحميل نسخة من قاعدة البيانات أو استرجاعها من ملف</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-rose-400 text-xl transition"></i>
-            </button>
-
-            <!-- الزر 6: تغيير كلمة مرور المسؤول -->
-            <button type="button" onclick="openChangeAdminCredentialsModal()" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-purple-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
-                <div class="flex items-center gap-4">
-                    <div class="bg-purple-500/20 text-purple-400 p-4 rounded-2xl text-3xl border border-purple-500/30 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-key"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-white">6. تغيير كلمة مرور المسؤول</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تحديث اسم المستخدم والرمز السري لحساب الأدمن الرئيسي</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-purple-400 text-xl transition"></i>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-emerald-400 transition"></i>
             </button>
 
         </div>
     </main>
 
-    <!-- 1. نافذة إحصائيات النظام -->
-    <div id="modalStats" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-2xl w-full border border-slate-700 space-y-5">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-indigo-400"></i> إحصائيات النظام العامة
-                </h4>
-                <button type="button" onclick="closeAdminModal('modalStats')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
-                    <span class="text-xs text-slate-400 font-bold block">عدد الموزعين:</span>
-                    <h3 id="statTotalVendeurs" class="text-2xl font-black text-indigo-400 mt-1">0</h3>
-                </div>
-                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
-                    <span class="text-xs text-slate-400 font-bold block">إجمالي الحوانت:</span>
-                    <h3 id="statTotalClients" class="text-2xl font-black text-emerald-400 mt-1">0</h3>
-                </div>
-                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
-                    <span class="text-xs text-slate-400 font-bold block">الطلبيات الجملية:</span>
-                    <h3 id="statTotalOrders" class="text-2xl font-black text-amber-400 mt-1">0</h3>
-                </div>
-                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-700">
-                    <span class="text-xs text-slate-400 font-bold block">فواتير الشراء المسجلة:</span>
-                    <h3 id="statTotalInvoices" class="text-2xl font-black text-rose-400 mt-1">0</h3>
-                </div>
-            </div>
-            <button type="button" onclick="closeAdminModal('modalStats')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- 2. نافذة إدارة واشتراكات الموزعين -->
-    <div id="modalVendeurs" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+    <!-- 1. نافذة إدارة واشتراكات الموزعين (مع إضافة الولاية والفلترة) -->
+    <div id="modalVendeursManagement" class="fixed inset-0 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
-            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
-                <div>
-                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear text-emerald-400"></i> إدارة حسابات واشتراكات الموزعين
-                    </h4>
-                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، تجديد، ونسخ بيانات الدخول</p>
-                </div>
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h4 class="font-bold text-base text-white flex items-center gap-2">
+                    <i class="fa-solid fa-truck-ramp-box text-indigo-400"></i> إدارة حسابات واشتراكات الموزعين
+                </h4>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="openAddVendeurModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 text-white shadow">
+                    <button type="button" onclick="openAddVendeurModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1 shadow">
                         <i class="fa-solid fa-plus"></i> إضافة موزع جديد
                     </button>
-                    <button type="button" onclick="loadAllSystemData()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold transition">
-                        <i class="fa-solid fa-rotate-right ml-1"></i> تحديث
-                    </button>
-                    <button type="button" onclick="closeAdminModal('modalVendeurs')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                    <button type="button" onclick="closeAdminSection('modalVendeursManagement')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
                 </div>
             </div>
+
+            <!-- شريط الفلترة بالولاية والبحث بالاسم -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-900 p-3 rounded-2xl border border-slate-700 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1"><i class="fa-solid fa-location-dot text-rose-400 ml-1"></i> تصفية حسب الولاية:</label>
+                    <select id="filterVendeurGov" onchange="renderVendeursTable()" class="w-full bg-slate-800 border border-slate-600 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500">
+                        <option value="">جميع الولايات (عرض الكل)</option>
+                        <option value="أريانة">أريانة</option>
+                        <option value="باجة">باجة</option>
+                        <option value="بن عروس">بن عروس</option>
+                        <option value="بنزرت">بنزرت</option>
+                        <option value="تطاوين">تطاوين</option>
+                        <option value="توزر">توزر</option>
+                        <option value="تونس">تونس</option>
+                        <option value="جندوبة">جندوبة</option>
+                        <option value="زغوان">زغوان</option>
+                        <option value="سليانة">سليانة</option>
+                        <option value="سوسة">سوسة</option>
+                        <option value="سيدي بوزيد">سيدي بوزيد</option>
+                        <option value="صفاقس">صفاقس</option>
+                        <option value="قابس">قابس</option>
+                        <option value="قبلي">قبلي</option>
+                        <option value="القصرين">القصرين</option>
+                        <option value="قفصة">قفصة</option>
+                        <option value="القيروان">القيروان</option>
+                        <option value="الكاف">الكاف</option>
+                        <option value="المهدية">المهدية</option>
+                        <option value="منوبة">منوبة</option>
+                        <option value="مدنين">مدنين</option>
+                        <option value="المنستير">المنستير</option>
+                        <option value="نابل">نابل</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1"><i class="fa-solid fa-magnifying-glass text-indigo-400 ml-1"></i> بحث بالاسم أو الهاتف أو المعرف:</label>
+                    <input type="text" id="searchVendeurInput" oninput="renderVendeursTable()" placeholder="اكتب للبحث..." class="w-full bg-slate-800 border border-slate-600 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- جدول الموزعين -->
             <div class="overflow-x-auto">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-700 text-slate-200">
                             <th>الموزع ومعرفه</th>
-                            <th>رقم الهاتف</th>
+                            <th>الولاية</th>
+                            <th>الهاتف</th>
                             <th>كلمة المرور</th>
-                            <th>حالة الحساب</th>
                             <th>نهاية الاشتراك</th>
-                            <th>الإجراءات والبيانات</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="vendeursTableBody" class="divide-y divide-slate-700">
-                        <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل البيانات...</td></tr>
+                        <tr><td colspan="7" class="text-center py-4 text-slate-400">جاري تحميل الموزعين...</td></tr>
                     </tbody>
                 </table>
             </div>
-            <button type="button" onclick="closeAdminModal('modalVendeurs')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+            <button type="button" onclick="closeAdminSection('modalVendeursManagement')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
-    <!-- 3. نافذة إدارة اشتراكات التجار (الحوانت) -->
-    <div id="modalClientSubscriptions" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+    <!-- نافذة إضافة / تعديل موزع (تشمل خانة الولاية وتوليد الكود) -->
+    <div id="modalAddVendeur" class="fixed inset-0 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 id="vendeurModalTitle" class="font-bold text-sm text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-indigo-400"></i> إضافة موزع جديد
+                </h4>
+                <button type="button" onclick="closeAdminSection('modalAddVendeur')" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <input type="hidden" id="editVendeurId">
+            <div class="space-y-3 text-right text-xs">
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">اسم الموزع:</label>
+                    <input type="text" id="vendeurNameInput" placeholder="مثال: مراد طريص..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">الولاية (Gouvernorat):</label>
+                    <select id="vendeurGovInput" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500">
+                        <option value="مدنين">مدنين</option>
+                        <option value="قابس">قابس</option>
+                        <option value="تطاوين">تطاوين</option>
+                        <option value="قبلي">قبلي</option>
+                        <option value="توزر">توزر</option>
+                        <option value="قفصة">قفصة</option>
+                        <option value="صفاقس">صفاقس</option>
+                        <option value="سيدي بوزيد">سيدي بوزيد</option>
+                        <option value="القصرين">القصرين</option>
+                        <option value="القيروان">القيروان</option>
+                        <option value="المهدية">المهدية</option>
+                        <option value="المنستير">المنستير</option>
+                        <option value="سوسة">سوسة</option>
+                        <option value="نابل">نابل</option>
+                        <option value="زغوان">زغوان</option>
+                        <option value="سليانة">سليانة</option>
+                        <option value="الكاف">الكاف</option>
+                        <option value="جندوبة">جندوبة</option>
+                        <option value="باجة">باجة</option>
+                        <option value="بنزرت">بنزرت</option>
+                        <option value="أريانة">أريانة</option>
+                        <option value="منوبة">منوبة</option>
+                        <option value="تونس">تونس</option>
+                        <option value="بن عروس">بن عروس</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">رقم الهاتف:</label>
+                    <input type="tel" id="vendeurPhoneInput" placeholder="مثال: 98123456" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">معرّف الموزع الفريد (ID):</label>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="vendeurCodeInput" readonly class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl font-mono font-black text-amber-400 text-center tracking-wider">
+                        <button type="button" onclick="generateNewVendeurCode()" class="bg-slate-700 hover:bg-slate-600 px-3 rounded-xl font-bold text-xs" title="توليد معرف جديد">توليد</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">كلمة المرور (تتولد تلقائياً أو اكتبها):</label>
+                    <input type="text" id="vendeurPasswordInput" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-mono font-bold text-emerald-400 text-center">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">تاريخ نهاية الاشتراك:</label>
+                    <input type="date" id="vendeurExpiryInput" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-bold text-white focus:outline-none focus:border-indigo-500 text-center">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="saveVendeurData()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md">حفظ الموزع</button>
+                <button type="button" onclick="closeAdminSection('modalAddVendeur')" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. نافذة إدارة واشتراكات تجار الحوانت (مع زر تعديل كلمة المرور) -->
+    <div id="modalClientsManagement" class="fixed inset-0 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <div>
-                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-id-card-clip text-cyan-400"></i> إدارة اشتراكات التجار (الحوانت)
-                    </h4>
-                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، وتمديد الاشتراك الرمزي للتجار المستعملين للتطبيق</p>
-                </div>
-                <button type="button" onclick="closeAdminModal('modalClientSubscriptions')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                <h4 class="font-bold text-base text-white flex items-center gap-2">
+                    <i class="fa-solid fa-store text-emerald-400"></i> إدارة واشتراكات تجار الحوانت
+                </h4>
+                <button type="button" onclick="closeAdminSection('modalClientsManagement')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
             </div>
+
             <div class="overflow-x-auto">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-700 text-slate-200">
                             <th>اسم الحانوت</th>
-                            <th>رقم الهاتف</th>
-                            <th>الولاية / العنوان</th>
-                            <th>حالة الاشتراك</th>
-                            <th>نهاية الاشتراك الرمزي</th>
-                            <th>التحكم بالاشتراك</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clientSubscriptionsTableBody" class="divide-y divide-slate-700">
-                        <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل اشتراكات الحوانت...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <button type="button" onclick="closeAdminModal('modalClientSubscriptions')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- 4. نافذة قائمة التجار (الحوانت) -->
-    <div id="modalClients" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
-            <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
-                <div>
-                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-store text-amber-400"></i> قائمة التجار (الحوانت)
-                    </h4>
-                    <p class="text-xs text-slate-400 mt-0.5">البحث ومتابعة وتعديل كلمات المرور</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="text" id="clientSearchInput" oninput="filterClientsTable()" placeholder="ابحث باسم الحانوت أو الهاتف..." class="bg-slate-900 border border-slate-700 p-2 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 w-48 md:w-60">
-                    <button type="button" onclick="closeAdminModal('modalClients')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-                </div>
-            </div>
-            <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                <table class="custom-grid w-full text-right text-xs">
-                    <thead>
-                        <tr class="bg-slate-700 text-slate-200">
-                            <th>اسم الحانوت</th>
                             <th>الهاتف</th>
-                            <th>كلمة المرور</th>
-                            <th>العنوان</th>
-                            <th>معرف الموزع (Vendeur ID)</th>
-                            <th>تعديل الكود</th>
+                            <th>الموزع المسؤول</th>
+                            <th>كلمة المرور الحالية</th>
+                            <th>التحكم بكلمة المرور</th>
+                            <th>الحالة</th>
                         </tr>
                     </thead>
-                    <tbody id="clientsTableBody" class="divide-y divide-slate-700">
+                    <tbody id="adminClientsTableBody" class="divide-y divide-slate-700">
                         <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل الحوانت...</td></tr>
                     </tbody>
                 </table>
             </div>
-            <button type="button" onclick="closeAdminModal('modalClients')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+            <button type="button" onclick="closeAdminSection('modalClientsManagement')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
-    <!-- 5. نافذة النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
-    <div id="modalBackup" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                    <i class="fa-solid fa-database text-rose-400"></i> النسخ الاحتياطي والاسترجاع
-                </h4>
-                <button type="button" onclick="closeAdminModal('modalBackup')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed">
-                يمكنك تحميل نسخة احتياطية كاملة من قاعدة البيانات على جهازك بضغطة زر، أو استرجاع نسخة تم حفظها مسبقاً في أي وقت وبكل سلاسة.
-            </p>
-            <div class="space-y-3 pt-2">
-                <button type="button" onclick="downloadBackupJSON()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
-                    <i class="fa-solid fa-cloud-arrow-down text-base"></i> تحميل نسخة احتياطية كاملة (Backup JSON)
-                </button>
-                <button type="button" onclick="triggerRestoreFileInput()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
-                    <i class="fa-solid fa-cloud-arrow-up text-base"></i> استرجاع نسخة من ملف (Restaurer JSON)
-                </button>
-                <input type="file" id="restoreFileInput" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
-            </div>
-            <button type="button" onclick="closeAdminModal('modalBackup')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة إضافة موزع جديد (Formulaire) -->
-    <div id="addVendeurModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <!-- نافذة تعديل / استرجاع كلمة مرور الحانوت -->
+    <div id="modalResetClientPassword" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
                 <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus text-emerald-400"></i> إنشاء حساب موزع جديد
+                    <i class="fa-solid fa-key text-amber-400"></i> تعديل كلمة مرور الحانوت
                 </h4>
-                <button type="button" onclick="closeAddVendeurModal()" class="text-slate-400 hover:text-white">&times;</button>
+                <button type="button" onclick="closeAdminSection('modalResetClientPassword')" class="text-slate-400 hover:text-white">&times;</button>
             </div>
-            <div class="space-y-3 text-right">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم الموزع / الشركة:</label>
-                    <input type="text" id="newVendeurName" placeholder="مثال: موزع تونس..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+            <input type="hidden" id="resetTargetClientId">
+            <div class="space-y-3 text-right text-xs">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <span class="text-slate-400 block">الحانوت المستهدف:</span>
+                    <strong id="resetTargetClientName" class="text-white text-sm block mt-0.5"></strong>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">رقم الهاتف:</label>
-                    <input type="tel" id="newVendeurPhone" placeholder="مثال: 98123456" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">مدة الاشتراك:</label>
-                    <select id="newVendeurDuration" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
-                        <option value="30">شهر واحد (30 يوماً)</option>
-                        <option value="90">3 أشهر</option>
-                        <option value="365" selected>سنة كاملة (365 يوماً)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">المعرف المقترح (تلقائي):</label>
-                    <input type="text" id="newVendeurCode" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl text-xs font-mono text-amber-400 text-center font-bold" readonly>
+                    <label class="block font-bold text-slate-400 mb-1">كلمة المرور الجديدة:</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="resetClientNewPasswordInput" placeholder="أدخل كلمة مرور جديدة..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl font-mono font-bold text-emerald-400 text-center text-sm focus:outline-none focus:border-amber-500">
+                        <button type="button" onclick="generateQuickClientPassword()" class="bg-slate-700 hover:bg-slate-600 px-3 rounded-xl font-bold text-xs text-slate-200">توليد</button>
+                    </div>
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="saveNewVendeur()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">تأكيد وإنشاء الحساب</button>
-                <button type="button" onclick="closeAddVendeurModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
+                <button type="button" onclick="saveClientNewPassword()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md">حفظ وتحديث الكود</button>
+                <button type="button" onclick="closeAdminSection('modalResetClientPassword')" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة النجاح وعرض بيانات الحساب الكبيرة والواضحة مع خاصية النسخ -->
-    <div id="vendeurCreatedSuccessModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 p-6 md:p-8 rounded-3xl max-w-lg w-full border-2 border-emerald-500/50 space-y-5 text-slate-100 shadow-2xl">
-            
-            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl border border-emerald-500/30">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-white">تم إنشاء حساب الموزع بنجاح</h3>
-                        <p class="text-xs text-slate-400 font-bold">بيانات تسجيل الدخول الخاصة بالموزع</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeVendeurSuccessModal()" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
-            </div>
-
-            <!-- بطاقة البيانات المنسقة والواضحة -->
-            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-700 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                    <span class="text-xs text-slate-400 font-bold">اسم الموزع:</span>
-                    <span id="succVendeurName" class="text-sm font-black text-white"></span>
-                </div>
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                    <span class="text-xs text-slate-400 font-bold">رقم الهاتف:</span>
-                    <span id="succVendeurPhone" class="text-sm font-mono text-slate-300 font-bold"></span>
-                </div>
-                <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <div>
-                        <span class="text-[11px] text-amber-400 font-bold block">معرف الدخول (ID Vendeur):</span>
-                        <span id="succVendeurCode" class="text-base font-black font-mono text-white"></span>
-                    </div>
-                    <button type="button" onclick="copyIndividualItem('succVendeurCode', 'المعرف')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-slate-700 font-bold transition flex items-center gap-1">
-                        <i class="fa-regular fa-copy"></i> نسخ
-                    </button>
-                </div>
-                <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <div>
-                        <span class="text-[11px] text-emerald-400 font-bold block">كلمة المرور (Mot de passe):</span>
-                        <span id="succVendeurPass" class="text-base font-black font-mono text-white"></span>
-                    </div>
-                    <button type="button" onclick="copyIndividualItem('succVendeurPass', 'كلمة المرور')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs px-3 py-1.5 rounded-lg border border-slate-700 font-bold transition flex items-center gap-1">
-                        <i class="fa-regular fa-copy"></i> نسخ
-                    </button>
-                </div>
-                <div class="flex justify-between items-center pt-1 text-xs">
-                    <span class="text-slate-400 font-bold">نهاية صلاحية الاشتراك:</span>
-                    <span id="succVendeurExpiry" class="font-mono text-indigo-400 font-bold"></span>
-                </div>
-            </div>
-
-            <!-- أزرار الإجراءات السفلية: نسخ كامل البيانات وزر الواتساب -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <button type="button" onclick="copyAllVendeurData()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition">
-                    <i class="fa-regular fa-copy text-sm"></i> نسخ كل البيانات معاً
-                </button>
-                <button type="button" onclick="triggerDirectWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition">
-                    <i class="fa-brands fa-whatsapp text-base"></i> إرسال عبر WhatsApp
-                </button>
-            </div>
-            
-            <button type="button" onclick="closeVendeurSuccessModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 py-2.5 rounded-xl font-bold text-xs transition">
-                إغلاق النافذة
-            </button>
-        </div>
-    </div>
-
-    <!-- نافذة تعديل كلمة مرور التاجر أو الفوندور -->
-    <div id="editPassModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
-            <h4 id="editPassTitle" class="font-bold text-sm text-white">تعديل كلمة المرور</h4>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">كلمة المرور الجديدة:</label>
-                <input type="text" id="newPassValue" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-rose-500">
-            </div>
-            <div class="flex gap-2">
-                <button type="button" onclick="saveUpdatedPassword()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
-                <button type="button" onclick="closeEditPassModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة تغيير بيانات دخول المسؤول المركزي -->
-    <div id="changeAdminCredsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                    <i class="fa-solid fa-key text-purple-400"></i> تغيير بيانات دخول المسؤول
-                </h4>
-                <button type="button" onclick="closeChangeAdminCredentialsModal()" class="text-slate-400 hover:text-white">&times;</button>
-            </div>
-            <div class="space-y-3 text-right">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">اسم المسؤول الجديد:</label>
-                    <input type="text" id="newAdminUsernameInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-purple-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور الجديدة:</label>
-                    <input type="text" id="newAdminPasswordInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-purple-500">
-                </div>
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ البيانات</button>
-                <button type="button" onclick="closeChangeAdminCredentialsModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة تأكيد استرجاع النسخة الاحتياطية -->
-    <div id="confirmRestoreModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4 text-slate-100">
-            <div class="flex items-center gap-3 text-amber-400 border-b border-slate-700 pb-3">
-                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-                <div>
-                    <h4 class="font-black text-sm text-white">تأكيد استرجاع النسخة الاحتياطية</h4>
-                    <p class="text-[11px] text-slate-400">سيتم استرجاع السجلات التالية إلى قاعدة البيانات:</p>
-                </div>
-            </div>
-            <div id="restoreSummaryContent" class="space-y-2 text-xs bg-slate-900 p-4 rounded-2xl border border-slate-700 font-mono"></div>
-            <div id="restoreProgressDiv" class="hidden space-y-2">
-                <p id="restoreStatusText" class="text-xs text-amber-400 font-bold text-center">جاري الاسترجاع، الرجاء الانتظار...</p>
-                <div class="w-full bg-slate-700 rounded-full h-2.5">
-                    <div id="restoreProgressBar" class="bg-emerald-500 h-2.5 rounded-full" style="width: 0%"></div>
-                </div>
-            </div>
-            <div class="flex gap-2 pt-2" id="restoreActionButtons">
-                <button type="button" onclick="executeDatabaseRestore()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">تأكيد وبدء الاسترجاع</button>
-                <button type="button" onclick="closeConfirmRestoreModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- كود الجافاسكريبت والربط بقاعدة البيانات (Firebase Firestore) -->
+    <!-- كود الجافاسكريبت والربط المباشر بقاعدة بيانات Firestore -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYNDYcwlmX5rdnpXyGoHR48g-T6h_oHFk",
@@ -512,44 +344,19 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function getStoredAdminCreds() {
-            const stored = localStorage.getItem('superAdminCreds');
-            if (stored) {
-                try { return JSON.parse(stored); } catch(e) {}
-            }
-            return { user: "admin", pass: "admin" };
-        }
+        const ADMIN_PIN = "9811"; // الرمز السري للسوبر أدمن
 
         window.allVendeurs = [];
         window.allClients = [];
-        window.allOrders = [];
-        window.allInvoices = [];
-        window.targetEditItem = null;
-        window.parsedRestoreData = null;
-        window.lastCreatedVendeur = null;
-
-        window.openAdminModal = function(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.remove('hidden');
-        };
-
-        window.closeAdminModal = function(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.add('hidden');
-        };
 
         window.handleAdminLogin = function() {
-            const enteredUser = (document.getElementById('adminUsernameInput').value || '').trim();
-            const enteredPass = (document.getElementById('adminMasterPass').value || '').trim();
-            const currentCreds = getStoredAdminCreds();
-
-            if (enteredUser === currentCreds.user && enteredPass === currentCreds.pass) {
+            const entered = (document.getElementById('adminPinInput').value || '').trim();
+            if (entered === ADMIN_PIN) {
                 sessionStorage.setItem('superAdminAuth', 'true');
                 document.getElementById('adminLoginScreen').classList.add('hidden');
-                document.getElementById('headerAdminDisplay').innerText = `المسؤول: ${currentCreds.user}`;
-                window.loadAllSystemData();
+                loadAllAdminData();
             } else {
-                alert('اسم المسؤول أو كلمة المرور غير صحيحة.');
+                alert("رمز الدخول غير صحيح.");
             }
         };
 
@@ -558,535 +365,271 @@
             location.reload();
         };
 
-        window.openChangeAdminCredentialsModal = function() {
-            const current = getStoredAdminCreds();
-            document.getElementById('newAdminUsernameInput').value = current.user;
-            document.getElementById('newAdminPasswordInput').value = current.pass;
-            document.getElementById('changeAdminCredsModal').classList.remove('hidden');
+        window.openAdminSection = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
         };
 
-        window.closeChangeAdminCredentialsModal = function() {
-            document.getElementById('changeAdminCredsModal').classList.add('hidden');
+        window.closeAdminSection = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
         };
 
-        window.saveNewAdminCredentials = function() {
-            const newUser = document.getElementById('newAdminUsernameInput').value.trim();
-            const newPass = document.getElementById('newAdminPasswordInput').value.trim();
-            if (!newUser || !newPass) { alert('الرجاء إدخال الاسم وكلمة المرور.'); return; }
-            localStorage.setItem('superAdminCreds', JSON.stringify({ user: newUser, pass: newPass }));
-            document.getElementById('headerAdminDisplay').innerText = `المسؤول: ${newUser}`;
-            alert('تم حفظ بيانات المسؤول بنجاح!');
-            closeChangeAdminCredentialsModal();
-        };
-
-        window.loadAllSystemData = async function() {
+        window.loadAllAdminData = async function() {
             try {
-                try {
-                    const vSnap = await getDocs(collection(db, "vendeurs"));
-                    window.allVendeurs = [];
-                    vSnap.forEach(d => window.allVendeurs.push({ id: d.id, ...d.data() }));
-                } catch(e) { console.warn("Vendeurs fetch error:", e); }
+                // جلب الموزعين
+                const vSnap = await getDocs(collection(db, "vendeurs"));
+                window.allVendeurs = [];
+                let activeV = 0, expiredSub = 0;
+                const now = new Date();
 
-                try {
-                    const cSnap = await getDocs(collection(db, "clients"));
-                    window.allClients = [];
-                    cSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
-                } catch(e) { console.warn("Clients fetch error:", e); }
+                vSnap.forEach(d => {
+                    const data = d.data();
+                    window.allVendeurs.push({ id: d.id, ...data });
+                    if (data.isActive !== false) activeV++;
+                    if (data.expiryDate && new Date(data.expiryDate) < now) expiredSub++;
+                });
 
-                try {
-                    const oSnap = await getDocs(collection(db, "orders"));
-                    window.allOrders = [];
-                    oSnap.forEach(d => window.allOrders.push({ id: d.id, ...d.data() }));
-                } catch(e) { console.warn("Orders fetch error:", e); }
+                // جلب الحوانت
+                const cSnap = await getDocs(collection(db, "clients"));
+                window.allClients = [];
+                cSnap.forEach(d => {
+                    window.allClients.push({ id: d.id, ...d.data() });
+                });
 
-                try {
-                    const iSnap = await getDocs(collection(db, "invoices"));
-                    window.allInvoices = [];
-                    iSnap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
-                } catch(e) { console.warn("Invoices fetch error:", e); }
-
+                // تحديث الإحصائيات
                 document.getElementById('statTotalVendeurs').innerText = window.allVendeurs.length;
+                document.getElementById('statActiveVendeurs').innerText = activeV;
                 document.getElementById('statTotalClients').innerText = window.allClients.length;
-                document.getElementById('statTotalOrders').innerText = window.allOrders.length;
-                document.getElementById('statTotalInvoices').innerText = window.allInvoices.length;
+                document.getElementById('statExpiredSubscriptions').innerText = expiredSub;
 
                 renderVendeursTable();
-                renderClientsTable(window.allClients);
-                renderClientSubscriptionsTable();
+                renderClientsTable();
+
             } catch (err) {
-                console.error("General load error:", err);
+                console.error("Error loading data:", err);
             }
         };
 
-        // فتح نافذة إنشاء موزع مع معرف تلقائي
+        // عرض جدول الموزعين مع التصفية بالولاية والبحث بالاسم
+        window.renderVendeursTable = function() {
+            const selectedGov = (document.getElementById('filterVendeurGov').value || '').trim();
+            const searchTerm = (document.getElementById('searchVendeurInput').value || '').trim().toLowerCase();
+
+            let filtered = window.allVendeurs.filter(v => {
+                const matchGov = !selectedGov || (v.governorate || '') === selectedGov;
+                const matchSearch = !searchTerm || 
+                    (v.name || '').toLowerCase().includes(searchTerm) || 
+                    (v.phone || '').includes(searchTerm) || 
+                    (v.vendeurCode || '').toLowerCase().includes(searchTerm);
+                return matchGov && matchSearch;
+            });
+
+            let html = '';
+            filtered.forEach(v => {
+                const isActive = v.isActive !== false;
+                const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('ar-TN') : 'دائم';
+                const isExpired = v.expiryDate && new Date() > new Date(v.expiryDate);
+
+                html += `
+                    <tr class="hover:bg-slate-750">
+                        <td>
+                            <div class="font-bold text-white">${v.name || 'بدون اسم'}</div>
+                            <div class="font-mono text-amber-400 font-bold text-[11px]">${v.vendeurCode || '—'}</div>
+                        </td>
+                        <td>
+                            <span class="bg-slate-700 px-2 py-0.5 rounded text-[11px] font-bold text-slate-200">
+                                <i class="fa-solid fa-location-dot text-rose-400 ml-1"></i>${v.governorate || 'غير محددة'}
+                            </span>
+                        </td>
+                        <td class="font-mono text-slate-300">${v.phone || '—'}</td>
+                        <td class="font-mono font-bold text-emerald-400">${v.password || '—'}</td>
+                        <td class="font-mono ${isExpired ? 'text-rose-400 font-bold' : 'text-slate-300'}">${expiry}</td>
+                        <td>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                                ${isActive ? 'نشط' : 'معطل'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2 py-1 rounded text-[10px] font-bold ${isActive ? 'bg-rose-600/30 text-rose-300 hover:bg-rose-600/50' : 'bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600/50'}">
+                                    ${isActive ? 'تعطيل' : 'تفعيل'}
+                                </button>
+                                <button type="button" onclick="editVendeur('${v.id}')" class="px-2 py-1 rounded text-[10px] font-bold bg-indigo-600 hover:bg-indigo-700 text-white">
+                                    تعديل
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const tbody = document.getElementById('vendeursTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="7" class="text-center py-4 text-slate-400">لا يوجد موزعون مطابقون للبحث.</td></tr>';
+        };
+
+        // عرض جدول الحوانت مع إضافة زر تعديل كلمة المرور
+        function renderClientsTable() {
+            let html = '';
+            window.allClients.forEach(c => {
+                const assignedVendeur = window.allVendeurs.find(v => v.id === c.vendeurId || v.vendeurCode === c.vendeurCode);
+                const vendeurName = assignedVendeur ? assignedVendeur.name : (c.vendeurCode || '—');
+
+                html += `
+                    <tr class="hover:bg-slate-750">
+                        <td class="font-bold text-white">${c.name || 'بدون اسم'}</td>
+                        <td class="font-mono text-slate-300">${c.phone || '—'}</td>
+                        <td class="text-indigo-400 font-bold">${vendeurName}</td>
+                        <td class="font-mono font-bold text-amber-400">${c.password || '123456'}</td>
+                        <td>
+                            <button type="button" onclick="openResetClientPasswordModal('${c.id}', '${c.name}', '${c.password || '123456'}')" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 transition">
+                                <i class="fa-solid fa-key"></i> تعديل المود باس
+                            </button>
+                        </td>
+                        <td>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-400">مشترك</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const tbody = document.getElementById('adminClientsTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مسجلة بعد.</td></tr>';
+        }
+
+        window.generateNewVendeurCode = function() {
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('vendeurCodeInput').value = `VND-${rand}`;
+        };
+
         window.openAddVendeurModal = function() {
-            const randomCode = 'VND-' + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('newVendeurCode').value = randomCode;
-            document.getElementById('newVendeurName').value = '';
-            document.getElementById('newVendeurPhone').value = '';
-            document.getElementById('addVendeurModal').classList.remove('hidden');
+            document.getElementById('editVendeurId').value = '';
+            document.getElementById('vendeurModalTitle').innerHTML = '<i class="fa-solid fa-user-plus text-indigo-400"></i> إضافة موزع جديد';
+            document.getElementById('vendeurNameInput').value = '';
+            document.getElementById('vendeurGovInput').value = 'مدنين';
+            document.getElementById('vendeurPhoneInput').value = '';
+            generateNewVendeurCode();
+            
+            // توليد كلمة مرور أوتوماتيكية من 6 أرقام
+            document.getElementById('vendeurPasswordInput').value = Math.floor(100000 + Math.random() * 900000);
+            
+            // نهاية الاشتراك الافتراضية بعد 30 يوماً
+            const d = new Date();
+            d.setDate(d.getDate() + 30);
+            document.getElementById('vendeurExpiryInput').value = d.toISOString().slice(0, 10);
+
+            openAdminSection('modalAddVendeur');
         };
 
-        window.closeAddVendeurModal = function() {
-            document.getElementById('addVendeurModal').classList.add('hidden');
+        window.editVendeur = function(id) {
+            const v = window.allVendeurs.find(item => item.id === id);
+            if (!v) return;
+
+            document.getElementById('editVendeurId').value = v.id;
+            document.getElementById('vendeurModalTitle').innerHTML = '<i class="fa-solid fa-user-pen text-indigo-400"></i> تعديل بيانات الموزع';
+            document.getElementById('vendeurNameInput').value = v.name || '';
+            document.getElementById('vendeurGovInput').value = v.governorate || 'مدنين';
+            document.getElementById('vendeurPhoneInput').value = v.phone || '';
+            document.getElementById('vendeurCodeInput').value = v.vendeurCode || '';
+            document.getElementById('vendeurPasswordInput').value = v.password || '';
+            document.getElementById('vendeurExpiryInput').value = v.expiryDate ? v.expiryDate.slice(0, 10) : '';
+
+            openAdminSection('modalAddVendeur');
         };
 
-        // حفظ موزع جديد في Firestore وفتح نافذة النجاح الواضحة
-        window.saveNewVendeur = async function() {
-            const name = document.getElementById('newVendeurName').value.trim();
-            const phone = document.getElementById('newVendeurPhone').value.trim();
-            const durationDays = parseInt(document.getElementById('newVendeurDuration').value);
-            const code = document.getElementById('newVendeurCode').value.trim();
+        window.saveVendeurData = async function() {
+            const editId = document.getElementById('editVendeurId').value;
+            const name = document.getElementById('vendeurNameInput').value.trim();
+            const governorate = document.getElementById('vendeurGovInput').value;
+            const phone = document.getElementById('vendeurPhoneInput').value.trim();
+            const code = document.getElementById('vendeurCodeInput').value.trim();
+            const password = document.getElementById('vendeurPasswordInput').value.trim();
+            const expiryDate = document.getElementById('vendeurExpiryInput').value;
 
-            if (!name || !phone) {
-                alert("الرجاء إدخال اسم الموزع ورقم الهاتف.");
+            if (!name || !phone || !code || !password) {
+                alert("الرجاء ملء كافة بيانات الموزع.");
                 return;
             }
 
-            const defaultPassword = Math.floor(100000 + Math.random() * 900000).toString();
-            const expiryDate = new Date(Date.now() + (durationDays * 24 * 60 * 60 * 1000)).toISOString();
-
             try {
-                const newDocRef = doc(collection(db, "vendeurs"));
-                const vendeurData = {
-                    id: newDocRef.id,
-                    name: name,
-                    phone: phone,
-                    vendeurCode: code,
-                    password: defaultPassword,
-                    isActive: true,
-                    createdAt: new Date().toISOString(),
-                    expiryDate: expiryDate
-                };
+                if (editId) {
+                    await updateDoc(doc(db, "vendeurs", editId), {
+                        name,
+                        governorate,
+                        phone,
+                        vendeurCode: code,
+                        password,
+                        expiryDate
+                    });
+                    alert("تم تحديث بيانات الموزع بنجاح!");
+                } else {
+                    const newDocRef = doc(collection(db, "vendeurs"));
+                    await setDoc(newDocRef, {
+                        id: newDocRef.id,
+                        name,
+                        governorate,
+                        phone,
+                        vendeurCode: code,
+                        password,
+                        expiryDate,
+                        isActive: true,
+                        createdAt: new Date().toISOString()
+                    });
+                    alert(`تمت إضافة الموزع بنجاح!\nالمعرّف: ${code}\nكلمة المرور: ${password}`);
+                }
 
-                await setDoc(newDocRef, vendeurData);
-                closeAddVendeurModal();
-                window.loadAllSystemData();
-
-                // حفظ بيانات الموزع الحالي وفتح نافذة التأكيد
-                window.lastCreatedVendeur = {
-                    name,
-                    phone,
-                    code,
-                    password: defaultPassword,
-                    expiry: expiryDate
-                };
-
-                document.getElementById('succVendeurName').innerText = name;
-                document.getElementById('succVendeurPhone').innerText = phone;
-                document.getElementById('succVendeurCode').innerText = code;
-                document.getElementById('succVendeurPass').innerText = defaultPassword;
-                document.getElementById('succVendeurExpiry').innerText = new Date(expiryDate).toLocaleDateString('ar-TN');
-
-                document.getElementById('vendeurCreatedSuccessModal').classList.remove('hidden');
-
+                closeAdminSection('modalAddVendeur');
+                loadAllAdminData();
             } catch (e) {
-                alert("خطأ أثناء إنشاء الحساب: " + e.message);
+                alert("خطأ: " + e.message);
             }
-        };
-
-        window.closeVendeurSuccessModal = function() {
-            document.getElementById('vendeurCreatedSuccessModal').classList.add('hidden');
-            window.lastCreatedVendeur = null;
-        };
-
-        // نسخ حقل واحد منفرد
-        window.copyIndividualItem = function(elementId, labelName) {
-            const text = document.getElementById(elementId).innerText.trim();
-            navigator.clipboard.writeText(text).then(() => {
-                alert(`تم نسخ ${labelName}: ${text}`);
-            }).catch(() => {
-                prompt(`انسخ ${labelName}:`, text);
-            });
-        };
-
-        // نسخ كامل الرسالة والبيانات معاً
-        window.copyAllVendeurData = function() {
-            if (!window.lastCreatedVendeur) return;
-            const v = window.lastCreatedVendeur;
-            const expiryFormatted = new Date(v.expiry).toLocaleDateString('ar-TN');
-
-            const fullText = `بيانات حساب الموزع:
-👤 الموزع: ${v.name}
-📞 الهاتف: ${v.phone}
-🔑 معرف الدخول (ID): ${v.code}
-🔒 كلمة المرور: ${v.password}
-📅 نهاية الاشتراك: ${expiryFormatted}`;
-
-            navigator.clipboard.writeText(fullText).then(() => {
-                alert("تم نسخ كل بيانات الموزع بنجاح إلى الحافظة!");
-            }).catch(() => {
-                prompt("انسخ البيانات من هنا:", fullText);
-            });
-        };
-
-        // إرسال مباشر من نافذة التأكيد عبر واتساب
-        window.triggerDirectWhatsApp = function() {
-            if (!window.lastCreatedVendeur) return;
-            const v = window.lastCreatedVendeur;
-            sendVendeurWhatsApp(v.name, v.phone, v.code, v.password, v.expiry);
-        };
-
-        // دالة إرسال بيانات الدخول عبر WhatsApp
-        window.sendVendeurWhatsApp = function(name, phone, code, password, expiry) {
-            let cleanPhone = (phone || '').replace(/[^0-9]/g, '');
-            if (!cleanPhone.startsWith('216') && cleanPhone.length === 8) {
-                cleanPhone = '216' + cleanPhone;
-            }
-
-            const expiryFormatted = expiry ? new Date(expiry).toLocaleDateString('ar-TN') : 'غير محدد';
-            const message = `مرحباً بك أخ ${name} في منظومة توزيع كروت الشحن (POS).
-
-تم تفعيل حساب الموزع الخاص بك بنجاح:
-👤 معرف الدخول (ID): ${code}
-🔑 كلمة المرور (Password): ${password}
-📅 نهاية صلاحية الاشتراك: ${expiryFormatted}
-
-الرجاء الاحتفاظ بهذه المعطيات للدخول إلى تطبيق الموزع.`;
-
-            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        };
-
-        // رسم جدول الموزعين مع زر نسخ سريع
-        function renderVendeursTable() {
-            let html = '';
-            window.allVendeurs.forEach(v => {
-                const isActive = v.isActive !== false;
-                const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('ar-TN') : 'غير محدد';
-                const code = v.vendeurCode || v.phone || '—';
-
-                html += `
-                    <tr class="hover:bg-slate-750">
-                        <td class="font-bold text-white">
-                            ${v.name || 'بدون اسم'}
-                            <span class="block text-[10px] font-mono text-amber-400 font-bold">${code}</span>
-                        </td>
-                        <td class="font-mono text-slate-300">${v.phone || '—'}</td>
-                        <td class="font-mono text-emerald-400 font-bold">${v.password || '—'}</td>
-                        <td>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-                                ${isActive ? 'مفعل' : 'معطل'}
-                            </span>
-                        </td>
-                        <td class="text-slate-300 font-mono text-[11px]">${expiry}</td>
-                        <td class="space-x-1 space-x-reverse whitespace-nowrap">
-                            <button type="button" onclick="sendVendeurWhatsApp('${v.name || ''}', '${v.phone || ''}', '${code}', '${v.password || ''}', '${v.expiryDate || ''}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-[10px] font-bold text-white shadow" title="إرسال عبر واتساب">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </button>
-                            <button type="button" onclick="navigator.clipboard.writeText('المعرف: ${code} | كلمة المرور: ${v.password || ''}'); alert('تم نسخ بيانات الدخول!');" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white shadow" title="نسخ المعرف والكود">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                            <button type="button" onclick="toggleVendeurStatus('${v.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
-                                ${isActive ? 'تعطيل' : 'تفعيل'}
-                            </button>
-                            <button type="button" onclick="renewSubscription('${v.id}', 30)" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold text-white">
-                                + شهر
-                            </button>
-                            <button type="button" onclick="openEditPass('vendeur', '${v.id}', '${v.name || ''}', '${v.password || ''}')" class="px-2 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
-                                تعديل
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            const tbody = document.getElementById('vendeursTableBody');
-            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا يوجد موزعون مسجلون.</td></tr>';
-        }
-
-        // رسم جدول اشتراكات الحوانت
-        function renderClientSubscriptionsTable() {
-            let html = '';
-            window.allClients.forEach(c => {
-                const isActive = c.isSubscribed !== false;
-                const expiry = c.subscriptionExpiry ? new Date(c.subscriptionExpiry).toLocaleDateString('ar-TN') : 'اشتراك رمزي مفتوح';
-                
-                html += `
-                    <tr class="hover:bg-slate-750">
-                        <td class="font-bold text-white">${c.name || 'بدون اسم'}</td>
-                        <td class="font-mono text-slate-300">${c.phone || '—'}</td>
-                        <td class="text-slate-300">${c.address || '—'}</td>
-                        <td>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-                                ${isActive ? 'مفعل' : 'معطل'}
-                            </span>
-                        </td>
-                        <td class="text-slate-300 font-mono">${expiry}</td>
-                        <td class="space-x-1 space-x-reverse">
-                            <button type="button" onclick="toggleClientSubscription('${c.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
-                                ${isActive ? 'تعطيل' : 'تفعيل'}
-                            </button>
-                            <button type="button" onclick="renewClientSubscription('${c.id}', 30)" class="px-2 py-1 rounded bg-cyan-600 hover:bg-cyan-700 text-[10px] font-bold text-white">
-                                + شهر
-                            </button>
-                            <button type="button" onclick="renewClientSubscription('${c.id}', 365)" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-[10px] font-bold text-white">
-                                + سنة
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            const tbody = document.getElementById('clientSubscriptionsTableBody');
-            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مسجلة.</td></tr>';
-        }
-
-        // رسم جدول قائمة الحوانت
-        function renderClientsTable(clientsList) {
-            let html = '';
-            clientsList.forEach(c => {
-                html += `
-                    <tr class="hover:bg-slate-750">
-                        <td class="font-bold text-white">${c.name || 'بدون اسم'}</td>
-                        <td class="font-mono text-slate-300">${c.phone || '—'}</td>
-                        <td class="font-mono text-emerald-400 font-bold">${c.password || '—'}</td>
-                        <td class="text-slate-300">${c.address || '—'}</td>
-                        <td class="font-mono text-[10px] text-slate-400">${c.vendeurId || '—'}</td>
-                        <td>
-                            <button type="button" onclick="openEditPass('client', '${c.id}', '${c.name || ''}', '${c.password || ''}')" class="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-700 text-[10px] font-bold text-white">
-                                تغيير كلمة المرور
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            const tbody = document.getElementById('clientsTableBody');
-            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مطابقة.</td></tr>';
-        }
-
-        window.filterClientsTable = function() {
-            const queryText = (document.getElementById('clientSearchInput').value || '').toLowerCase().trim();
-            const filtered = window.allClients.filter(c => 
-                (c.name && c.name.toLowerCase().includes(queryText)) ||
-                (c.phone && c.phone.includes(queryText))
-            );
-            renderClientsTable(filtered);
         };
 
         window.toggleVendeurStatus = async function(id, currentStatus) {
             try {
                 await updateDoc(doc(db, "vendeurs", id), { isActive: !currentStatus });
-                alert(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} حساب الموزع.`);
-                window.loadAllSystemData();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        window.renewSubscription = async function(id, days) {
-            try {
-                const now = new Date();
-                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
-                await updateDoc(doc(db, "vendeurs", id), { 
-                    isActive: true, 
-                    expiryDate: newDate.toISOString() 
-                });
-                alert(`تم تمديد اشتراك الموزع بنجاح لمدة ${days} يوماً.`);
-                window.loadAllSystemData();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        window.toggleClientSubscription = async function(id, currentStatus) {
-            try {
-                await updateDoc(doc(db, "clients", id), { isSubscribed: !currentStatus });
-                alert(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} اشتراك التاجر.`);
-                window.loadAllSystemData();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        window.renewClientSubscription = async function(id, days) {
-            try {
-                const now = new Date();
-                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
-                await updateDoc(doc(db, "clients", id), { 
-                    isSubscribed: true, 
-                    subscriptionExpiry: newDate.toISOString() 
-                });
-                alert(`تم تمديد اشتراك التاجر الرمزي بنجاح لمدة ${days} يوماً.`);
-                window.loadAllSystemData();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        window.openEditPass = function(type, id, name, currentPass) {
-            window.targetEditItem = { type, id };
-            document.getElementById('editPassTitle').innerText = `تعديل كلمة مرور: ${name}`;
-            document.getElementById('newPassValue').value = currentPass || '';
-            document.getElementById('editPassModal').classList.remove('hidden');
-        };
-
-        window.closeEditPassModal = function() {
-            document.getElementById('editPassModal').classList.add('hidden');
-            window.targetEditItem = null;
-        };
-
-        window.saveUpdatedPassword = async function() {
-            const newPass = document.getElementById('newPassValue').value.trim();
-            if (!newPass) { alert('أدخل كلمة المرور.'); return; }
-            try {
-                const collectionName = window.targetEditItem.type === 'vendeur' ? 'vendeurs' : 'clients';
-                await updateDoc(doc(db, collectionName, window.targetEditItem.id), { password: newPass });
-                alert('تم حفظ كلمة المرور الجديدة بنجاح.');
-                window.closeEditPassModal();
-                window.loadAllSystemData();
-            } catch (e) { alert('خطأ: ' + e.message); }
-        };
-
-        // دالة تنزيل النسخة الاحتياطية
-        window.downloadBackupJSON = async function() {
-            try {
-                const [vSnap, cSnap, oSnap, iSnap] = await Promise.all([
-                    getDocs(collection(db, "vendeurs")),
-                    getDocs(collection(db, "clients")),
-                    getDocs(collection(db, "orders")),
-                    getDocs(collection(db, "invoices"))
-                ]);
-
-                const fullBackup = {
-                    system: "tunisia-recharge-pos",
-                    version: "1.0",
-                    timestamp: new Date().toISOString(),
-                    vendeurs: vSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    clients: cSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    orders: oSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    invoices: iSnap.docs.map(d => ({ id: d.id, ...d.data() }))
-                };
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
-                const dlAnchor = document.createElement('a');
-                dlAnchor.setAttribute("href", dataStr);
-                dlAnchor.setAttribute("download", `backup_tunisia_recharge_${new Date().toISOString().slice(0, 10)}.json`);
-                document.body.appendChild(dlAnchor);
-                dlAnchor.click();
-                dlAnchor.remove();
-            } catch (err) {
-                alert("خطأ أثناء تنزيل النسخة الاحتياطية: " + err.message);
+                loadAllAdminData();
+            } catch (e) {
+                alert("خطأ أثناء تغيير الحالة: " + e.message);
             }
         };
 
-        window.triggerRestoreFileInput = function() {
-            const input = document.getElementById('restoreFileInput');
-            if (input) {
-                input.value = '';
-                input.click();
+        // فتح نافذة تعديل كلمة مرور الحانوت
+        window.openResetClientPasswordModal = function(clientId, clientName, currentPass) {
+            document.getElementById('resetTargetClientId').value = clientId;
+            document.getElementById('resetTargetClientName').innerText = clientName;
+            document.getElementById('resetClientNewPasswordInput').value = currentPass || '123456';
+            openAdminSection('modalResetClientPassword');
+        };
+
+        window.generateQuickClientPassword = function() {
+            document.getElementById('resetClientNewPasswordInput').value = Math.floor(100000 + Math.random() * 900000);
+        };
+
+        // حفظ كلمة مرور الحانوت الجديدة
+        window.saveClientNewPassword = async function() {
+            const clientId = document.getElementById('resetTargetClientId').value;
+            const newPassword = document.getElementById('resetClientNewPasswordInput').value.trim();
+
+            if (!newPassword) {
+                alert("الرجاء إدخال كلمة مرور صالحة.");
+                return;
             }
-        };
-
-        // قراءة ملف الاسترجاع وتجهيز البيانات
-        window.handleRestoreFileSelected = function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const rawData = JSON.parse(event.target.result);
-
-                    const data = {
-                        timestamp: rawData.timestamp || new Date().toISOString(),
-                        vendeurs: Array.isArray(rawData.vendeurs) ? rawData.vendeurs : [],
-                        clients: Array.isArray(rawData.clients) ? rawData.clients : [],
-                        orders: Array.isArray(rawData.orders) ? rawData.orders : [],
-                        invoices: Array.isArray(rawData.invoices) ? rawData.invoices : []
-                    };
-
-                    const total = data.vendeurs.length + data.clients.length + data.orders.length + data.invoices.length;
-                    if (total === 0) {
-                        alert("الملف المختار فارغ أو لا يحتوي على سجلات مطابقة لنظام كروت الشحن.");
-                        return;
-                    }
-
-                    window.parsedRestoreData = data;
-
-                    document.getElementById('restoreSummaryContent').innerHTML = `
-                        <div>📁 تاريخ النسخة: ${new Date(data.timestamp).toLocaleString('ar-TN')}</div>
-                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${data.vendeurs.length}</span></div>
-                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${data.clients.length}</span></div>
-                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${data.orders.length}</span></div>
-                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${data.invoices.length}</span></div>
-                        <div class="text-emerald-400 font-bold mt-2 border-t border-slate-700 pt-1">المجموع الكلي: ${total} سجل جاهز</div>
-                    `;
-
-                    document.getElementById('restoreProgressDiv').classList.add('hidden');
-                    document.getElementById('restoreActionButtons').classList.remove('hidden');
-                    document.getElementById('confirmRestoreModal').classList.remove('hidden');
-
-                } catch (err) {
-                    alert('تعذر قراءة الملف: تأكد من اختيار ملف بتنسيق JSON صحيح (' + err.message + ')');
-                }
-            };
-            reader.readAsText(file);
-        };
-
-        window.closeConfirmRestoreModal = function() {
-            document.getElementById('confirmRestoreModal').classList.add('hidden');
-            window.parsedRestoreData = null;
-        };
-
-        // تنفيذ استرجاع السجلات في Firestore
-        window.executeDatabaseRestore = async function() {
-            if (!window.parsedRestoreData) return;
-            const data = window.parsedRestoreData;
-
-            document.getElementById('restoreActionButtons').classList.add('hidden');
-            document.getElementById('restoreProgressDiv').classList.remove('hidden');
-
-            const statusText = document.getElementById('restoreStatusText');
-            const progressBar = document.getElementById('restoreProgressBar');
 
             try {
-                const collectionsList = [
-                    { name: "vendeurs", items: data.vendeurs },
-                    { name: "clients", items: data.clients },
-                    { name: "orders", items: data.orders },
-                    { name: "invoices", items: data.invoices }
-                ];
-
-                let totalItems = collectionsList.reduce((acc, c) => acc + c.items.length, 0);
-                let processed = 0;
-
-                for (const col of collectionsList) {
-                    statusText.innerText = `جاري استرجاع: ${col.name} (${col.items.length} سجل)...`;
-
-                    for (const item of col.items) {
-                        try {
-                            const docId = item.id;
-                            const cleanData = JSON.parse(JSON.stringify(item));
-                            delete cleanData.id;
-
-                            if (docId) {
-                                await setDoc(doc(db, col.name, String(docId)), cleanData, { merge: true });
-                            } else {
-                                await addDoc(collection(db, col.name), cleanData);
-                            }
-                        } catch (itemErr) {
-                            console.error(`خطأ في عنصر من ${col.name}:`, itemErr);
-                        }
-
-                        processed++;
-                        if (totalItems > 0) {
-                            const pct = Math.round((processed / totalItems) * 100);
-                            progressBar.style.width = `${pct}%`;
-                        }
-                    }
-                }
-
-                statusText.innerText = 'اكتملت العملية بنجاح!';
-                alert('اكتملت عملية استرجاع النسخة الاحتياطية بنجاح 100% وتم تحديث قاعدة البيانات.');
-                closeConfirmRestoreModal();
-                closeAdminModal('modalBackup');
-                window.loadAllSystemData();
-
-            } catch (err) {
-                alert('حدث خطأ أثناء الاسترجاع: ' + err.message);
-                document.getElementById('restoreActionButtons').classList.remove('hidden');
+                await updateDoc(doc(db, "clients", clientId), { password: newPassword });
+                alert("تم تحديث كلمة المرور للتاجر بنجاح!");
+                closeAdminSection('modalResetClientPassword');
+                loadAllAdminData();
+            } catch (e) {
+                alert("خطأ أثناء تحديث كلمة المرور: " + e.message);
             }
         };
 
-        // التحقق التلقائي من تسجيل دخول الأدمن
+        // فحص الجلسة عند فتح الصفحة
         if (sessionStorage.getItem('superAdminAuth') === 'true') {
-            const loginScr = document.getElementById('adminLoginScreen');
-            if (loginScr) loginScr.classList.add('hidden');
-            const current = getStoredAdminCreds();
-            const headerDisplay = document.getElementById('headerAdminDisplay');
-            if (headerDisplay) headerDisplay.innerText = `المسؤول: ${current.user}`;
-            window.loadAllSystemData();
+            document.getElementById('adminLoginScreen').classList.add('hidden');
+            loadAllAdminData();
         }
     </script>
 </body>
