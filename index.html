@@ -19,7 +19,7 @@
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-slate-100 pb-12">
 
-    <!-- شاشة تسجيل دخول الأدمن الرئيسي (admin / admin) -->
+    <!-- شاشة تسجيل دخول الأدمن الرئيسي -->
     <div id="adminLoginScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full border border-slate-700 text-center space-y-4">
             <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <!-- رأسية لوحة الأدمن -->
+    <!-- رأسية لوحة الأدمن (يحتوي فقط على الاسم وزر الخروج) -->
     <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -55,23 +55,18 @@
                     <span class="text-[10px] text-slate-400 font-bold block" id="headerAdminDisplay">المسؤول: admin</span>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="openChangeAdminCredentialsModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-key"></i> كلمة المرور
-                </button>
-                <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">
-                    خروج
-                </button>
-            </div>
+            <button type="button" onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-right-from-bracket"></i> خروج
+            </button>
         </div>
     </header>
 
-    <!-- الواجهة الرئيسية: 4 أزرار كبيرة ومنظمة -->
+    <!-- الواجهة الرئيسية المنظمة بالأزرار الكبيرة -->
     <main class="container mx-auto px-4 py-8 max-w-4xl space-y-6">
 
         <div class="text-center space-y-2 mb-6">
-            <h2 class="text-2xl font-black text-white">لوحة الإدارة المركزية والتحكم</h2>
-            <p class="text-xs text-slate-400 font-bold">اختر القسم الذي تريد إدارته من الأزرار التالية:</p>
+            <h2 class="text-2xl font-black text-white">لوحة الإدارة والتحكم في النظام</h2>
+            <p class="text-xs text-slate-400 font-bold">اختر القسم الذي تريد إدارته من الأزرار المخصصة أدناه:</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,13 +79,13 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-black text-white">1. إحصائيات النظام العامة</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">عدد الموزعين، إجمالي الحوانت، الطلبيات، والفواتير</p>
+                        <p class="text-xs text-slate-400 font-normal mt-1">عدد الموزعين، الحوانت، الطلبيات، والفواتير المسجلة</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-indigo-400 text-xl transition"></i>
             </button>
 
-            <!-- الزر 2: إدارة حسابات واشتراكات الموزعين -->
+            <!-- الزر 2: إدارة واشتراكات الموزعين -->
             <button type="button" onclick="openAdminModal('modalVendeurs')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-emerald-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
                 <div class="flex items-center gap-4">
                     <div class="bg-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-3xl border border-emerald-500/30 group-hover:scale-105 transition">
@@ -98,38 +93,66 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-black text-white">2. إدارة واشتراكات الموزعين</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل، تعطيل، تجديد الاشتراكات، وتعديل الكود</p>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل، تعطيل، وتجديد اشتراكات الموزعين بالجملة</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-emerald-400 text-xl transition"></i>
             </button>
 
-            <!-- الزر 3: قاعدة بيانات التجار (الحوانت) -->
+            <!-- الزر 3: إدارة واشتراكات التجار (الحوانت) -->
+            <button type="button" onclick="openAdminModal('modalClientSubscriptions')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-cyan-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-cyan-500/20 text-cyan-400 p-4 rounded-2xl text-3xl border border-cyan-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">3. إدارة اشتراكات التجار (الحوانت)</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تفعيل وتجديد الاشتراكات الرمزية للحوانت المستعملة للتطبيق</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-cyan-400 text-xl transition"></i>
+            </button>
+
+            <!-- الزر 4: قاعدة بيانات التجار العامة (تعديل الأكواد والعناوين) -->
             <button type="button" onclick="openAdminModal('modalClients')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-amber-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
                 <div class="flex items-center gap-4">
                     <div class="bg-amber-500/20 text-amber-400 p-4 rounded-2xl text-3xl border border-amber-500/30 group-hover:scale-105 transition">
                         <i class="fa-solid fa-store"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-white">3. قاعدة بيانات التجار (الحوانت)</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">عرض الحوانت، البحث، ومتابعة كلمات المرور ومشاكل الدخول</p>
+                        <h3 class="text-lg font-black text-white">4. قاعدة بيانات التجار (الحوانت)</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">بحث شامل، وتعديل كلمات مرور الحوانت ومشاكل الدخول</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-amber-400 text-xl transition"></i>
             </button>
 
-            <!-- الزر 4: النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
+            <!-- الزر 5: النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
             <button type="button" onclick="openAdminModal('modalBackup')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-rose-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
                 <div class="flex items-center gap-4">
                     <div class="bg-rose-500/20 text-rose-400 p-4 rounded-2xl text-3xl border border-rose-500/30 group-hover:scale-105 transition">
                         <i class="fa-solid fa-database"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-white">4. النسخ الاحتياطي والاسترجاع</h3>
-                        <p class="text-xs text-slate-400 font-normal mt-1">تحميل نسخة من كامل قاعدة البيانات أو استرجاعها</p>
+                        <h3 class="text-lg font-black text-white">5. النسخ الاحتياطي والاسترجاع</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تحميل نسخة من قاعدة البيانات أو استرجاعها من ملف</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-rose-400 text-xl transition"></i>
+            </button>
+
+            <!-- الزر 6: تغيير كلمة مرور المسؤول (Super Admin) المنقول إلى الأسفل -->
+            <button type="button" onclick="openChangeAdminCredentialsModal()" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-purple-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-purple-500/20 text-purple-400 p-4 rounded-2xl text-3xl border border-purple-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">6. تغيير كلمة مرور المسؤول</h3>
+                        <p class="text-xs text-slate-400 font-normal mt-1">تحديث اسم المستخدم والرمز السري لحساب الأدمن الرئيسي</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-purple-400 text-xl transition"></i>
             </button>
 
         </div>
@@ -204,7 +227,40 @@
         </div>
     </div>
 
-    <!-- 3. نافذة قاعدة بيانات الحوانت -->
+    <!-- 3. نافذة إدارة اشتراكات التجار (الحوانت) الجديدة -->
+    <div id="modalClientSubscriptions" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
+        <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <div>
+                    <h4 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-id-card-clip text-cyan-400"></i> إدارة اشتراكات التجار (الحوانت)
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-0.5">تفعيل، تعطيل، وتمديد الاشتراك الرمزي للتجار المستعملين للتطبيق</p>
+                </div>
+                <button type="button" onclick="closeAdminModal('modalClientSubscriptions')" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="custom-grid w-full text-right text-xs">
+                    <thead>
+                        <tr class="bg-slate-700 text-slate-200">
+                            <th>اسم الحانوت</th>
+                            <th>رقم الهاتف</th>
+                            <th>الولاية / العنوان</th>
+                            <th>حالة الاشتراك</th>
+                            <th>نهاية الاشتراك الرمزي</th>
+                            <th>التحكم بالاشتراك</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientSubscriptionsTableBody" class="divide-y divide-slate-700">
+                        <tr><td colspan="6" class="text-center py-4 text-slate-400">جاري تحميل اشتراكات الحوانت...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" onclick="closeAdminModal('modalClientSubscriptions')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- 4. نافذة قاعدة بيانات الحوانت (بحث وتعديل الكود) -->
     <div id="modalClients" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
             <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
@@ -240,7 +296,7 @@
         </div>
     </div>
 
-    <!-- 4. نافذة النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
+    <!-- 5. نافذة النسخ الاحتياطي والاسترجاع (Sauvegarde) -->
     <div id="modalBackup" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
@@ -280,27 +336,27 @@
         </div>
     </div>
 
-    <!-- نافذة تغيير بيانات دخول المسؤول -->
+    <!-- نافذة تغيير بيانات دخول المسؤول المركزي -->
     <div id="changeAdminCredsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-sm w-full border border-slate-700 space-y-4 text-slate-100">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
                 <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                    <i class="fa-solid fa-key text-amber-500"></i> تغيير بيانات دخول المسؤول
+                    <i class="fa-solid fa-key text-purple-400"></i> تغيير بيانات دخول المسؤول
                 </h4>
                 <button type="button" onclick="closeChangeAdminCredentialsModal()" class="text-slate-400 hover:text-white">&times;</button>
             </div>
             <div class="space-y-3 text-right">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">اسم المسؤول الجديد:</label>
-                    <input type="text" id="newAdminUsernameInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="newAdminUsernameInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-purple-500">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور الجديدة:</label>
-                    <input type="text" id="newAdminPasswordInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="newAdminPasswordInput" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-purple-500">
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ</button>
+                <button type="button" onclick="saveNewAdminCredentials()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ البيانات</button>
                 <button type="button" onclick="closeChangeAdminCredentialsModal()" class="bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
@@ -363,7 +419,6 @@
         window.targetEditItem = null;
         window.parsedRestoreData = null;
 
-        // إدارة فتح وإغلاق النوافذ
         window.openAdminModal = function(id) {
             const modal = document.getElementById(id);
             if (modal) modal.classList.remove('hidden');
@@ -448,6 +503,7 @@
 
                 renderVendeursTable();
                 renderClientsTable(window.allClients);
+                renderClientSubscriptionsTable();
             } catch (err) {
                 console.error("General error:", err);
             }
@@ -489,6 +545,42 @@
             });
             const tbody = document.getElementById('vendeursTableBody');
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا يوجد موزعون مسجلون.</td></tr>';
+        }
+
+        // جدول إدارة اشتراكات التجار (الحوانت)
+        function renderClientSubscriptionsTable() {
+            let html = '';
+            window.allClients.forEach(c => {
+                const isActive = c.isSubscribed !== false;
+                const expiry = c.subscriptionExpiry ? new Date(c.subscriptionExpiry).toLocaleDateString() : 'اشتراك رمزي مفتوح';
+                
+                html += `
+                    <tr class="hover:bg-slate-750">
+                        <td class="font-bold text-white">${c.name || 'بدون اسم'}</td>
+                        <td class="font-mono text-slate-300">${c.phone || '—'}</td>
+                        <td class="text-slate-300">${c.address || '—'}</td>
+                        <td>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${isActive ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                                ${isActive ? 'مفعل' : 'معطل'}
+                            </span>
+                        </td>
+                        <td class="text-slate-300 font-mono">${expiry}</td>
+                        <td class="space-x-1 space-x-reverse">
+                            <button type="button" onclick="toggleClientSubscription('${c.id}', ${isActive})" class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-[10px] font-bold">
+                                ${isActive ? 'تعطيل' : 'تفعيل'}
+                            </button>
+                            <button type="button" onclick="renewClientSubscription('${c.id}', 30)" class="px-2 py-1 rounded bg-cyan-600 hover:bg-cyan-700 text-[10px] font-bold text-white">
+                                + شهر
+                            </button>
+                            <button type="button" onclick="renewClientSubscription('${c.id}', 365)" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-[10px] font-bold text-white">
+                                + سنة
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            const tbody = document.getElementById('clientSubscriptionsTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا توجد حوانت مسجلة.</td></tr>';
         }
 
         function renderClientsTable(clientsList) {
@@ -539,6 +631,28 @@
                     expiryDate: newDate.toISOString() 
                 });
                 alert(`تم تمديد اشتراك الموزع بنجاح لمدة ${days} يوماً.`);
+                window.loadAllSystemData();
+            } catch (e) { alert('خطأ: ' + e.message); }
+        };
+
+        // دوال التحكم باشتراكات التجار
+        window.toggleClientSubscription = async function(id, currentStatus) {
+            try {
+                await updateDoc(doc(db, "clients", id), { isSubscribed: !currentStatus });
+                alert(`تم ${!currentStatus ? 'تفعيل' : 'تعطيل'} اشتراك التاجر.`);
+                window.loadAllSystemData();
+            } catch (e) { alert('خطأ: ' + e.message); }
+        };
+
+        window.renewClientSubscription = async function(id, days) {
+            try {
+                const now = new Date();
+                const newDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
+                await updateDoc(doc(db, "clients", id), { 
+                    isSubscribed: true, 
+                    subscriptionExpiry: newDate.toISOString() 
+                });
+                alert(`تم تمديد اشتراك التاجر الرمزي بنجاح لمدة ${days} يوماً.`);
                 window.loadAllSystemData();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
