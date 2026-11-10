@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <!-- رأسية لوحة الأدمن (يحتوي فقط على الاسم وزر الخروج) -->
+    <!-- رأسية لوحة الأدمن -->
     <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -113,14 +113,14 @@
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-cyan-400 text-xl transition"></i>
             </button>
 
-            <!-- الزر 4: قاعدة بيانات التجار العامة (تعديل الأكواد والعناوين) -->
+            <!-- الزر 4: قائمة التجار (الحوانت) -->
             <button type="button" onclick="openAdminModal('modalClients')" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-amber-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
                 <div class="flex items-center gap-4">
                     <div class="bg-amber-500/20 text-amber-400 p-4 rounded-2xl text-3xl border border-amber-500/30 group-hover:scale-105 transition">
                         <i class="fa-solid fa-store"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-white">4. قاعدة بيانات التجار (الحوانت)</h3>
+                        <h3 class="text-lg font-black text-white">4. قائمة التجار (الحوانت)</h3>
                         <p class="text-xs text-slate-400 font-normal mt-1">بحث شامل، وتعديل كلمات مرور الحوانت ومشاكل الدخول</p>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                 <i class="fa-solid fa-chevron-left text-slate-500 group-hover:text-rose-400 text-xl transition"></i>
             </button>
 
-            <!-- الزر 6: تغيير كلمة مرور المسؤول (Super Admin) المنقول إلى الأسفل -->
+            <!-- الزر 6: تغيير كلمة مرور المسؤول -->
             <button type="button" onclick="openChangeAdminCredentialsModal()" class="w-full text-right bg-slate-800 hover:bg-slate-750 border-2 border-purple-500/50 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg group">
                 <div class="flex items-center gap-4">
                     <div class="bg-purple-500/20 text-purple-400 p-4 rounded-2xl text-3xl border border-purple-500/30 group-hover:scale-105 transition">
@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <!-- 3. نافذة إدارة اشتراكات التجار (الحوانت) الجديدة -->
+    <!-- 3. نافذة إدارة اشتراكات التجار (الحوانت) -->
     <div id="modalClientSubscriptions" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
@@ -260,13 +260,13 @@
         </div>
     </div>
 
-    <!-- 4. نافذة قاعدة بيانات الحوانت (بحث وتعديل الكود) -->
+    <!-- 4. نافذة قائمة التجار (الحوانت) -->
     <div id="modalClients" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-40 p-4">
         <div class="bg-slate-800 p-6 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 space-y-4">
             <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-700 pb-3">
                 <div>
                     <h4 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-store text-amber-400"></i> قاعدة بيانات التجار (الحوانت)
+                        <i class="fa-solid fa-store text-amber-400"></i> قائمة التجار (الحوانت)
                     </h4>
                     <p class="text-xs text-slate-400 mt-0.5">البحث ومتابعة وتعديل كلمات المرور</p>
                 </div>
@@ -386,7 +386,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات -->
+    <!-- السكربت والربط بقاعدة البيانات (Firebase) والدوال المصححة بالكامل -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -513,7 +513,7 @@
             let html = '';
             window.allVendeurs.forEach(v => {
                 const isActive = v.isActive !== false;
-                const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString() : 'غير محدد';
+                const expiry = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('ar-TN') : 'غير محدد';
                 
                 html += `
                     <tr class="hover:bg-slate-750">
@@ -547,12 +547,11 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-slate-400">لا يوجد موزعون مسجلون.</td></tr>';
         }
 
-        // جدول إدارة اشتراكات التجار (الحوانت)
         function renderClientSubscriptionsTable() {
             let html = '';
             window.allClients.forEach(c => {
                 const isActive = c.isSubscribed !== false;
-                const expiry = c.subscriptionExpiry ? new Date(c.subscriptionExpiry).toLocaleDateString() : 'اشتراك رمزي مفتوح';
+                const expiry = c.subscriptionExpiry ? new Date(c.subscriptionExpiry).toLocaleDateString('ar-TN') : 'اشتراك رمزي مفتوح';
                 
                 html += `
                     <tr class="hover:bg-slate-750">
@@ -635,7 +634,6 @@
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        // دوال التحكم باشتراكات التجار
         window.toggleClientSubscription = async function(id, currentStatus) {
             try {
                 await updateDoc(doc(db, "clients", id), { isSubscribed: !currentStatus });
@@ -681,20 +679,36 @@
             } catch (e) { alert('خطأ: ' + e.message); }
         };
 
-        window.downloadBackupJSON = function() {
-            const fullBackup = {
-                timestamp: new Date().toISOString(),
-                vendeurs: window.allVendeurs,
-                clients: window.allClients,
-                orders: window.allOrders,
-                invoices: window.allInvoices
-            };
+        // دالة تنزيل النسخة الاحتياطية المباشرة والموثوقة من Firestore
+        window.downloadBackupJSON = async function() {
+            try {
+                const [vSnap, cSnap, oSnap, iSnap] = await Promise.all([
+                    getDocs(collection(db, "vendeurs")),
+                    getDocs(collection(db, "clients")),
+                    getDocs(collection(db, "orders")),
+                    getDocs(collection(db, "invoices"))
+                ]);
 
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `backup_tunisia_recharge_${new Date().toISOString().slice(0,10)}.json`);
-            dlAnchor.click();
+                const fullBackup = {
+                    system: "tunisia-recharge-pos",
+                    version: "1.0",
+                    timestamp: new Date().toISOString(),
+                    vendeurs: vSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+                    clients: cSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+                    orders: oSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+                    invoices: iSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+                };
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
+                const dlAnchor = document.createElement('a');
+                dlAnchor.setAttribute("href", dataStr);
+                dlAnchor.setAttribute("download", `backup_tunisia_recharge_${new Date().toISOString().slice(0, 10)}.json`);
+                document.body.appendChild(dlAnchor);
+                dlAnchor.click();
+                dlAnchor.remove();
+            } catch (err) {
+                alert("خطأ أثناء تنزيل النسخة الاحتياطية: " + err.message);
+            }
         };
 
         window.triggerRestoreFileInput = function() {
@@ -705,6 +719,7 @@
             }
         };
 
+        // دالة قراءة وتجهيز ملف الاسترجاع مع دعم مختلف صيغ الـ JSON
         window.handleRestoreFileSelected = function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -713,24 +728,31 @@
             reader.onload = function(event) {
                 try {
                     const data = JSON.parse(event.target.result);
-                    if (!data.vendeurs && !data.clients && !data.orders && !data.invoices) {
-                        alert('الملف المختار ليس ملف نسخة احتياطية صالح لنظام كروت الشحن.');
+
+                    const vendeurs = Array.isArray(data.vendeurs) ? data.vendeurs : [];
+                    const clients = Array.isArray(data.clients) ? data.clients : [];
+                    const orders = Array.isArray(data.orders) ? data.orders : [];
+                    const invoices = Array.isArray(data.invoices) ? data.invoices : [];
+
+                    if (vendeurs.length === 0 && clients.length === 0 && orders.length === 0 && invoices.length === 0) {
+                        alert("الملف المختار فارغ أو لا يحتوي على سجلات مطابقة لنظام كروت الشحن.");
                         return;
                     }
 
-                    window.parsedRestoreData = data;
-
-                    const vCount = (data.vendeurs || []).length;
-                    const cCount = (data.clients || []).length;
-                    const oCount = (data.orders || []).length;
-                    const iCount = (data.invoices || []).length;
+                    window.parsedRestoreData = {
+                        timestamp: data.timestamp || new Date().toISOString(),
+                        vendeurs,
+                        clients,
+                        orders,
+                        invoices
+                    };
 
                     document.getElementById('restoreSummaryContent').innerHTML = `
-                        <div>📁 تاريخ النسخة: ${data.timestamp ? new Date(data.timestamp).toLocaleString() : 'غير محدد'}</div>
-                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${vCount}</span></div>
-                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${cCount}</span></div>
-                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${oCount}</span></div>
-                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${iCount}</span></div>
+                        <div>📁 تاريخ النسخة: ${data.timestamp ? new Date(data.timestamp).toLocaleString('ar-TN') : 'غير محدد'}</div>
+                        <div>👥 الموزعون (Vendeurs): <span class="text-indigo-400 font-bold">${vendeurs.length}</span></div>
+                        <div>🏪 الحوانت (Clients): <span class="text-emerald-400 font-bold">${clients.length}</span></div>
+                        <div>📦 الطلبيات (Orders): <span class="text-amber-400 font-bold">${orders.length}</span></div>
+                        <div>🧾 الفواتير (Invoices): <span class="text-rose-400 font-bold">${invoices.length}</span></div>
                     `;
 
                     document.getElementById('restoreProgressDiv').classList.add('hidden');
@@ -738,7 +760,7 @@
                     document.getElementById('confirmRestoreModal').classList.remove('hidden');
 
                 } catch (err) {
-                    alert('خطأ أثناء قراءة ملف JSON: ' + err.message);
+                    alert('تعذر قراءة الملف: تأكد من اختيار ملف بتنسيق JSON صحيح (' + err.message + ')');
                 }
             };
             reader.readAsText(file);
@@ -749,6 +771,7 @@
             window.parsedRestoreData = null;
         };
 
+        // تنفيذ عملية كتابة واسترجاع السجلات في Firestore
         window.executeDatabaseRestore = async function() {
             if (!window.parsedRestoreData) return;
             const data = window.parsedRestoreData;
